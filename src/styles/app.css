@@ -1,0 +1,617 @@
+/* ============================================================
+   RECON SHELF — app shell & responsive desktop layout
+   Layout-only additions on top of recon-shelf.css.
+   Follows the .rs-* naming convention. No new color tokens,
+   no overrides of the design system's palette.
+   ============================================================ */
+
+/* ---- layout-only tokens (reference existing palette) ---- */
+:root {
+  --rs-sidebar-w: 248px;
+  --rs-content-max: 780px;
+  --rs-tabbar-h: 58px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body.recon-shelf {
+  margin: 0;
+  min-height: 100%;
+  /* faint top-lit texture so large desktop surfaces aren't dead flat */
+  background:
+    radial-gradient(1200px 600px at 50% -10%, rgba(201, 164, 92, 0.05), transparent 60%),
+    var(--rs-bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ============================================================
+   App shell: sidebar (desktop) + main column
+   ============================================================ */
+.rs-shell {
+  display: flex;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* ---- sidebar (desktop nav) ---- */
+.rs-sidebar {
+  width: var(--rs-sidebar-w);
+  flex-shrink: 0;
+  border-right: 1px solid var(--rs-border);
+  background: linear-gradient(180deg, var(--rs-surface), var(--rs-bg) 70%);
+  padding: var(--rs-space-6) var(--rs-space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--rs-space-6);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
+}
+
+.rs-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--rs-space-3);
+  padding: 0 var(--rs-space-2);
+}
+
+.rs-sidebar-brand .rs-logo-text {
+  font-size: 18px;
+}
+
+.rs-sidebar-eyebrow {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--rs-text-faint);
+  padding: 0 var(--rs-space-2);
+  margin: 0 0 var(--rs-space-2);
+}
+
+.rs-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rs-nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--rs-space-3);
+  padding: 10px var(--rs-space-3);
+  border-radius: var(--rs-radius-md);
+  color: var(--rs-text-muted);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  border: 1px solid transparent;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.rs-nav-link:hover {
+  background: var(--rs-surface-raised);
+  color: var(--rs-text-primary);
+}
+
+.rs-nav-link.is-active {
+  background: var(--rs-surface-raised);
+  border-color: var(--rs-border-strong);
+  color: var(--rs-text-primary);
+}
+
+.rs-nav-link.is-active .rs-icon {
+  color: var(--rs-brass);
+}
+
+.rs-nav-link .rs-icon {
+  flex-shrink: 0;
+  color: var(--rs-text-faint);
+}
+
+.rs-sidebar-foot {
+  margin-top: auto;
+  border-top: 1px solid var(--rs-border);
+  padding-top: var(--rs-space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--rs-space-3);
+}
+
+.rs-account {
+  display: flex;
+  align-items: center;
+  gap: var(--rs-space-3);
+  min-width: 0;
+  padding: 0 var(--rs-space-2);
+}
+
+.rs-account-email {
+  font-size: 12px;
+  color: var(--rs-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rs-signout {
+  background: none;
+  border: none;
+  color: var(--rs-text-faint);
+  font-size: 12px;
+  font-family: var(--rs-font-sans);
+  cursor: pointer;
+  padding: 0 var(--rs-space-2);
+  text-align: left;
+}
+
+.rs-signout:hover {
+  color: var(--rs-rust);
+}
+
+/* ---- main column ---- */
+.rs-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.rs-content {
+  width: 100%;
+  max-width: var(--rs-content-max);
+  margin: 0 auto;
+  padding: var(--rs-space-6);
+  padding-bottom: calc(var(--rs-space-6) + env(safe-area-inset-bottom));
+  flex: 1;
+}
+
+/* ---- page header (in-content title + back) ---- */
+.rs-page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--rs-space-4);
+  margin-bottom: var(--rs-space-5);
+}
+
+.rs-page-title {
+  font-family: var(--rs-font-condensed);
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--rs-text-primary);
+  margin: 0;
+}
+
+.rs-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rs-space-2);
+  color: var(--rs-text-muted);
+  font-size: 13px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: var(--rs-font-sans);
+  padding: 0;
+}
+
+.rs-back:hover {
+  color: var(--rs-brass);
+}
+
+/* section title within content */
+.rs-section-title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--rs-text-secondary);
+  margin: 0 0 var(--rs-space-3);
+}
+
+.rs-block {
+  margin-bottom: var(--rs-space-6);
+}
+
+.rs-block:last-child {
+  margin-bottom: 0;
+}
+
+/* desktop: let stat grids breathe wider */
+.rs-stat-grid--4 {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+/* ---- mobile top bar (mirrors .rs-header but app-level) ---- */
+.rs-topbar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(var(--rs-space-4) + env(safe-area-inset-top)) var(--rs-space-5) var(--rs-space-4);
+  border-bottom: 1px solid var(--rs-border);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--rs-bg);
+}
+
+/* ---- mobile bottom tab bar ---- */
+.rs-tabbar {
+  display: none;
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  height: calc(var(--rs-tabbar-h) + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--rs-surface);
+  border-top: 1px solid var(--rs-border);
+}
+
+.rs-tabbar-inner {
+  display: flex;
+  height: var(--rs-tabbar-h);
+}
+
+.rs-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: var(--rs-text-faint);
+  font-size: 10px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.rs-tab.is-active {
+  color: var(--rs-brass);
+}
+
+/* ============================================================
+   Auth / login screen
+   ============================================================ */
+.rs-auth {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--rs-space-6);
+}
+
+.rs-auth-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--rs-surface);
+  border: 1px solid var(--rs-border-strong);
+  border-radius: var(--rs-radius-lg);
+  padding: var(--rs-space-6);
+  text-align: center;
+}
+
+.rs-auth-card .rs-logo {
+  justify-content: center;
+  margin-bottom: var(--rs-space-5);
+}
+
+.rs-auth-title {
+  font-family: var(--rs-font-condensed);
+  font-size: 24px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin: 0 0 var(--rs-space-2);
+  color: var(--rs-text-primary);
+}
+
+.rs-auth-sub {
+  font-size: 13px;
+  color: var(--rs-text-muted);
+  margin: 0 0 var(--rs-space-5);
+  line-height: 1.6;
+}
+
+.rs-auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rs-space-3);
+}
+
+.rs-auth-form input {
+  width: 100%;
+  text-align: center;
+}
+
+.rs-auth-note {
+  font-size: 12px;
+  color: var(--rs-text-faint);
+  margin-top: var(--rs-space-4);
+  line-height: 1.6;
+}
+
+.rs-auth-error {
+  color: var(--rs-rust);
+}
+
+.rs-auth-success {
+  color: var(--rs-forest);
+}
+
+/* ---- extend the design system's input styling to the input types it
+   doesn't enumerate (email, number, date). Mirrors the .recon-shelf input
+   rules in recon-shelf.css so every control matches. ---- */
+.recon-shelf input[type='email'],
+.recon-shelf input[type='number'],
+.recon-shelf input[type='date'],
+.recon-shelf input[type='password'],
+.recon-shelf input[type='tel'],
+.recon-shelf input[type='url'] {
+  background: var(--rs-surface);
+  border: 1px solid var(--rs-border-input);
+  border-radius: var(--rs-radius-md);
+  color: var(--rs-text-primary);
+  font-family: var(--rs-font-sans);
+  font-size: 14px;
+  padding: 10px 12px;
+  height: 36px;
+}
+
+.recon-shelf input[type='email']:focus,
+.recon-shelf input[type='number']:focus,
+.recon-shelf input[type='date']:focus,
+.recon-shelf input[type='password']:focus,
+.recon-shelf input[type='tel']:focus,
+.recon-shelf input[type='url']:focus {
+  outline: none;
+  border-color: var(--rs-brass);
+  box-shadow: var(--rs-focus-ring);
+}
+
+/* date pickers render a light calendar glyph by default — invert for dark UI */
+.recon-shelf input[type='date']::-webkit-calendar-picker-indicator {
+  filter: invert(0.7) sepia(0.4) saturate(2) hue-rotate(5deg);
+  cursor: pointer;
+}
+
+/* ============================================================
+   Forms (Add to shelf, settings, notes)
+   ============================================================ */
+.rs-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rs-space-4);
+  max-width: 520px;
+}
+
+.rs-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rs-space-2);
+}
+
+.rs-field label {
+  font-size: 11px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--rs-text-faint);
+}
+
+.rs-field input,
+.rs-field select,
+.rs-field textarea {
+  width: 100%;
+}
+
+.rs-field-row {
+  display: flex;
+  gap: var(--rs-space-3);
+}
+
+.rs-field-row .rs-field {
+  flex: 1;
+}
+
+.rs-form-error {
+  color: var(--rs-rust);
+  font-size: 13px;
+}
+
+/* ============================================================
+   Dossier extras
+   ============================================================ */
+.rs-dossier-head-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--rs-space-2);
+}
+
+.rs-dossier-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--rs-text-primary);
+  margin: 0;
+  line-height: 1.25;
+}
+
+.rs-dossier-author {
+  font-size: 14px;
+  color: var(--rs-text-muted);
+  margin: 0;
+}
+
+.rs-note-item {
+  background: var(--rs-surface);
+  border: 1px solid var(--rs-border);
+  border-left: 3px solid var(--rs-steel);
+  border-radius: var(--rs-radius-md);
+  padding: var(--rs-space-3) var(--rs-space-4);
+  margin-bottom: var(--rs-space-2);
+}
+
+.rs-note-meta {
+  font-size: 11px;
+  color: var(--rs-text-faint);
+  margin: var(--rs-space-2) 0 0;
+  letter-spacing: 0.3px;
+}
+
+.rs-note-add {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rs-space-2);
+  margin-top: var(--rs-space-3);
+}
+
+/* log-pages inline control */
+.rs-logpages {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--rs-space-3);
+}
+
+/* rating stars */
+.rs-stars {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.rs-star {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  color: var(--rs-border-input);
+  line-height: 0;
+}
+
+.rs-star.is-on {
+  color: var(--rs-brass);
+}
+
+/* status filter tabs */
+.rs-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--rs-space-2);
+  margin-bottom: var(--rs-space-4);
+}
+
+.rs-filter {
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: var(--rs-radius-sm);
+  border: 1px solid var(--rs-border-input);
+  background: transparent;
+  color: var(--rs-text-muted);
+  cursor: pointer;
+  font-family: var(--rs-font-sans);
+}
+
+.rs-filter.is-active {
+  background: var(--rs-surface-raised);
+  border-color: var(--rs-brass);
+  color: var(--rs-text-primary);
+}
+
+.rs-select-inline {
+  height: 32px;
+  font-size: 12px;
+}
+
+/* commendation highlight card */
+.rs-commendation {
+  background: linear-gradient(135deg, rgba(201, 164, 92, 0.12), var(--rs-surface));
+  border: 1px solid var(--rs-brass);
+  border-radius: var(--rs-radius-lg);
+  padding: var(--rs-space-5);
+  display: flex;
+  gap: var(--rs-space-4);
+  align-items: center;
+}
+
+/* toast */
+.rs-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--rs-tabbar-h) + 20px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  background: var(--rs-surface-raised);
+  border: 1px solid var(--rs-border-strong);
+  color: var(--rs-text-primary);
+  font-size: 13px;
+  padding: 10px 16px;
+  border-radius: var(--rs-radius-md);
+  z-index: 50;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+}
+
+.rs-muted-line {
+  font-size: 13px;
+  color: var(--rs-text-muted);
+}
+
+.rs-spinner-wrap {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--rs-text-muted);
+  font-size: 14px;
+}
+
+/* ============================================================
+   Responsive — collapse to phone shell on small screens
+   ============================================================ */
+@media (max-width: 760px) {
+  .rs-sidebar {
+    display: none;
+  }
+  .rs-topbar {
+    display: flex;
+  }
+  .rs-tabbar {
+    display: block;
+  }
+  .rs-content {
+    padding: var(--rs-space-5);
+  }
+  .rs-page-title {
+    font-size: 22px;
+  }
+  .rs-commendation {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* on very wide screens, keep content from stretching uncomfortably */
+@media (min-width: 1100px) {
+  .rs-content {
+    padding-top: var(--rs-space-6);
+  }
+}

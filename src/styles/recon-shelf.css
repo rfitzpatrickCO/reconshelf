@@ -1,0 +1,476 @@
+/* ============================================================
+   RECON SHELF — design system
+   A Jack Carr / James Reece-inspired book tracking app
+   ============================================================ */
+
+/* ---- 1. design tokens ---- */
+:root {
+  /* surfaces */
+  --rs-bg:            #1c1b18;  /* page background — matte olive-charcoal */
+  --rs-surface:        #23221a;  /* cards, rows */
+  --rs-surface-raised: #2a291f;  /* hover / elevated surface */
+
+  /* borders */
+  --rs-border:        #33312a;  /* default border */
+  --rs-border-strong: #3a382f;  /* emphasis border / dividers */
+  --rs-border-input:  #4a4738;  /* form control borders */
+
+  /* accents */
+  --rs-brass:        #c9a45c;  /* primary accent — brass / tomahawk handle */
+  --rs-brass-dark:   #1c1b18;  /* text-on-brass */
+  --rs-forest:       #8fae7a;  /* secondary accent — success / active state */
+  --rs-forest-dark:  #0c443a;  /* text-on-forest */
+  --rs-rust:         #c97a5c;  /* tertiary accent — warning / low progress */
+  --rs-rust-dark:    #4a1b0c;  /* text-on-rust */
+  --rs-steel:        #6a8aae;  /* quaternary accent — info / category */
+  --rs-steel-dark:   #042c53;  /* text-on-steel */
+
+  /* text */
+  --rs-text-primary:   #e8e3d6;  /* warm off-white, aged-paper */
+  --rs-text-secondary: #c9c5b4;
+  --rs-text-muted:     #9a9788;  /* AA-safe muted (use instead of #8a8779) */
+  --rs-text-faint:     #7d7a6c;  /* labels, eyebrows — large text only */
+
+  /* typography */
+  --rs-font-sans:   var(--font-sans, -apple-system, "Segoe UI", Roboto, sans-serif);
+  --rs-font-serif:  var(--font-serif, Georgia, "Times New Roman", serif);
+  --rs-font-condensed: "Oswald", "Bebas Neue", var(--rs-font-sans);
+
+  /* radius */
+  --rs-radius-sm: 4px;
+  --rs-radius-md: 8px;
+  --rs-radius-lg: 12px;
+
+  /* spacing rhythm */
+  --rs-space-1: 4px;
+  --rs-space-2: 8px;
+  --rs-space-3: 12px;
+  --rs-space-4: 16px;
+  --rs-space-5: 20px;
+  --rs-space-6: 24px;
+
+  /* shadow — used sparingly, only for focus rings */
+  --rs-focus-ring: 0 0 0 3px rgba(201, 164, 92, 0.35);
+}
+
+/* ---- 2. base ---- */
+body.recon-shelf {
+  background: var(--rs-bg);
+  color: var(--rs-text-primary);
+  font-family: var(--rs-font-sans);
+  line-height: 1.5;
+}
+
+.rs-eyebrow {
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--rs-text-faint);
+  margin: 0 0 var(--rs-space-3);
+}
+
+.rs-serif-note {
+  font-family: var(--rs-font-serif);
+  font-style: italic;
+  color: var(--rs-text-secondary);
+  line-height: 1.7;
+}
+
+/* ---- 3. layout shell ---- */
+.rs-app {
+  background: var(--rs-bg);
+  border-radius: var(--rs-radius-lg);
+  border: 0.5px solid var(--rs-border-strong);
+  overflow: hidden;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.rs-section {
+  padding: var(--rs-space-5) var(--rs-space-6);
+  border-bottom: 1px solid var(--rs-surface-raised);
+}
+
+.rs-section:last-child {
+  border-bottom: none;
+}
+
+/* ---- 4. header / nav bar ---- */
+.rs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--rs-space-5) var(--rs-space-6);
+  border-bottom: 1px solid var(--rs-border);
+}
+
+.rs-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--rs-space-2);
+}
+
+.rs-logo-text {
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  color: var(--rs-text-primary);
+}
+
+.rs-header-icons {
+  display: flex;
+  align-items: center;
+  gap: var(--rs-space-4);
+}
+
+.rs-header-icons i {
+  color: var(--rs-text-muted);
+  font-size: 18px;
+}
+
+.rs-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--rs-surface);
+  border: 1px solid var(--rs-border-input);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--rs-brass);
+}
+
+/* ---- 5. stat cards ---- */
+.rs-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--rs-space-3);
+}
+
+.rs-stat-card {
+  background: var(--rs-surface);
+  border: 1px solid var(--rs-border);
+  border-radius: var(--rs-radius-md);
+  padding: var(--rs-space-3) var(--rs-space-4);
+}
+
+.rs-stat-label {
+  font-size: 10px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--rs-text-faint);
+  margin: 0 0 var(--rs-space-1);
+}
+
+.rs-stat-value {
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--rs-text-primary);
+  margin: 0;
+}
+
+.rs-stat-value--brass  { color: var(--rs-brass); }
+.rs-stat-value--forest { color: var(--rs-forest); }
+.rs-stat-value--rust   { color: var(--rs-rust); }
+.rs-stat-value--steel  { color: var(--rs-steel); }
+
+/* ---- 6. book row (shelf list item) ---- */
+.rs-book-row {
+  display: flex;
+  gap: var(--rs-space-3);
+  align-items: center;
+  padding: var(--rs-space-3);
+  background: var(--rs-surface);
+  border: 1px solid var(--rs-border);
+  border-radius: var(--rs-radius-md);
+  margin-bottom: var(--rs-space-2);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.rs-book-row:hover {
+  background: var(--rs-surface-raised);
+}
+
+.rs-book-row:last-child {
+  margin-bottom: 0;
+}
+
+.rs-book-cover {
+  width: 38px;
+  height: 54px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  background: var(--rs-border-input);
+  border-left: 3px solid var(--rs-brass); /* override per status, see below */
+}
+
+.rs-book-cover--active  { border-left-color: var(--rs-brass); }
+.rs-book-cover--done    { border-left-color: var(--rs-forest); }
+.rs-book-cover--stalled { border-left-color: var(--rs-rust); }
+
+.rs-book-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.rs-book-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--rs-text-primary);
+  margin: 0 0 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rs-book-author {
+  font-size: 12px;
+  color: var(--rs-text-muted);
+  margin: 0;
+}
+
+.rs-book-progress {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.rs-book-progress-pct {
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0 0 5px;
+}
+
+/* ---- 7. progress bars ---- */
+.rs-progress-track {
+  width: 60px;
+  height: 3px;
+  background: var(--rs-border-strong);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.rs-progress-track--wide {
+  width: 100%;
+  height: 8px;
+}
+
+.rs-progress-fill {
+  height: 100%;
+  background: var(--rs-brass);
+}
+
+.rs-progress-fill--forest { background: var(--rs-forest); }
+.rs-progress-fill--rust   { background: var(--rs-rust); }
+.rs-progress-fill--steel  { background: var(--rs-steel); }
+
+/* ---- 8. status badge ---- */
+.rs-badge {
+  display: inline-block;
+  width: fit-content;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: var(--rs-radius-sm);
+}
+
+.rs-badge--active    { background: var(--rs-forest); color: var(--rs-forest-dark); }
+.rs-badge--queued    { background: var(--rs-brass);  color: var(--rs-brass-dark); }
+.rs-badge--debriefed { background: var(--rs-border-strong); color: var(--rs-text-secondary); }
+.rs-badge--stalled   { background: var(--rs-rust);   color: var(--rs-rust-dark); }
+
+/* ---- 9. buttons ---- */
+.rs-btn {
+  font-family: var(--rs-font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  padding: 11px 16px;
+  border-radius: var(--rs-radius-md);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: transform 0.1s ease, background 0.15s ease;
+}
+
+.rs-btn:active {
+  transform: scale(0.98);
+}
+
+.rs-btn-primary {
+  background: var(--rs-brass);
+  color: var(--rs-brass-dark);
+}
+
+.rs-btn-primary:hover {
+  background: #d4b170;
+}
+
+.rs-btn-secondary {
+  background: transparent;
+  border: 1px solid var(--rs-border-input);
+  color: var(--rs-text-secondary);
+}
+
+.rs-btn-secondary:hover {
+  background: var(--rs-surface);
+}
+
+.rs-btn-row {
+  display: flex;
+  gap: var(--rs-space-2);
+}
+
+.rs-btn-row .rs-btn {
+  flex: 1;
+}
+
+.rs-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--rs-focus-ring);
+}
+
+/* ---- 10. category / genre bars ("theaters") ---- */
+.rs-theater-row {
+  display: flex;
+  align-items: center;
+  gap: var(--rs-space-3);
+  margin-bottom: var(--rs-space-2);
+}
+
+.rs-theater-row:last-child {
+  margin-bottom: 0;
+}
+
+.rs-theater-label {
+  font-size: 13px;
+  color: var(--rs-text-secondary);
+  width: 100px;
+  flex-shrink: 0;
+}
+
+.rs-theater-count {
+  font-size: 12px;
+  color: var(--rs-text-faint);
+  width: 24px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ---- 11. empty states ---- */
+.rs-empty {
+  text-align: center;
+  padding: var(--rs-space-6) var(--rs-space-4);
+}
+
+.rs-empty-icon {
+  font-size: 28px;
+  color: var(--rs-border-input);
+  margin-bottom: var(--rs-space-3);
+}
+
+.rs-empty-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--rs-text-secondary);
+  margin: 0 0 var(--rs-space-1);
+}
+
+.rs-empty-subtitle {
+  font-size: 13px;
+  color: var(--rs-text-faint);
+  margin: 0;
+}
+
+/* ---- 12. dossier (book detail) ---- */
+.rs-dossier-header {
+  display: flex;
+  gap: var(--rs-space-4);
+}
+
+.rs-dossier-cover {
+  width: 84px;
+  height: 122px;
+  border-radius: var(--rs-radius-sm);
+  background: var(--rs-border-input);
+  border-left: 4px solid var(--rs-brass);
+  flex-shrink: 0;
+}
+
+.rs-dossier-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--rs-space-3);
+}
+
+.rs-dossier-meta-label {
+  font-size: 10px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--rs-text-faint);
+  margin: 0 0 var(--rs-space-1);
+}
+
+.rs-dossier-meta-value {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--rs-text-primary);
+  margin: 0;
+}
+
+/* ---- 13. form controls (Add to shelf, etc.) ---- */
+.recon-shelf input[type="text"],
+.recon-shelf input[type="search"],
+.recon-shelf select,
+.recon-shelf textarea {
+  background: var(--rs-surface);
+  border: 1px solid var(--rs-border-input);
+  border-radius: var(--rs-radius-md);
+  color: var(--rs-text-primary);
+  font-family: var(--rs-font-sans);
+  font-size: 14px;
+  padding: 10px 12px;
+  height: 36px;
+}
+
+.recon-shelf textarea {
+  height: auto;
+  min-height: 80px;
+  resize: vertical;
+}
+
+.recon-shelf input::placeholder,
+.recon-shelf textarea::placeholder {
+  color: var(--rs-text-faint);
+}
+
+.recon-shelf input:focus,
+.recon-shelf select:focus,
+.recon-shelf textarea:focus {
+  outline: none;
+  border-color: var(--rs-brass);
+  box-shadow: var(--rs-focus-ring);
+}
+
+.recon-shelf input[type="range"] {
+  accent-color: var(--rs-brass);
+}
+
+/* ---- 14. utility ---- */
+.rs-flex { display: flex; }
+.rs-flex-col { display: flex; flex-direction: column; }
+.rs-items-center { align-items: center; }
+.rs-justify-between { justify-content: space-between; }
+.rs-gap-1 { gap: var(--rs-space-1); }
+.rs-gap-2 { gap: var(--rs-space-2); }
+.rs-gap-3 { gap: var(--rs-space-3); }
+.rs-gap-4 { gap: var(--rs-space-4); }
+.rs-text-muted { color: var(--rs-text-muted); }
+.rs-text-faint { color: var(--rs-text-faint); }
