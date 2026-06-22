@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createBook, listBooks } from '../lib/db'
+import { searchVolumes, isGoogleBooksConfigured } from '../lib/googleBooks'
 import { useToast } from '../components/Toast'
 import Icon from '../components/Icon'
 
@@ -25,9 +26,16 @@ export default function AddBook() {
     category: '',
     target_date: '',
     cover_color: '',
+    cover_url: '',
   })
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
+
+  // Google Books search state
+  const [query, setQuery] = useState('')
+  const [results, setResults] = useState([])
+  const [searching, setSearching] = useState(false)
+  const [searchError, setSearchError] = useState('')
 
   useEffect(() => {
     listBooks()
@@ -38,8 +46,51 @@ export default function AddBook() {
       .catch(() => {})
   }, [])
 
+  // Debounced Google Books lookup — searches 400ms after the user stops typing.
+  useEffect(() => {
+    const q = query.trim()
+    if (q.length < 3) {
+      setResults([])
+      setSearchError('')
+      return
+    }
+    const controller = new AbortController()
+    setSearching(true)
+    const t = setTimeout(() => {
+      searchVolumes(q, { signal: controller.signal })
+        .then((r) => {
+          setResults(r)
+          setSearchError('')
+        })
+        .catch((err) => {
+          if (err.name !== 'AbortError') {
+            setSearchError('Search unavailable — you can still enter details manually below.')
+          }
+        })
+        .finally(() => setSearching(false))
+    }, 400)
+    return () => {
+      clearTimeout(t)
+      controller.abort()
+    }
+  }, [query])
+
   function set(field, value) {
     setForm((f) => ({ ...f, [field]: value }))
+  }
+
+  function selectResult(r) {
+    setForm((f) => ({
+      ...f,
+      title: r.title || f.title,
+      author: r.author || f.author,
+      total_pages: r.pageCount ? String(r.pageCount) : f.total_pages,
+      category: r.category || f.category,
+      cover_url: r.thumbnail || f.cover_url,
+    }))
+    setResults([])
+    setQuery('')
+    toast('Details filled from Google Books — review and add.')
   }
 
   async function onSubmit(e) {
@@ -58,6 +109,7 @@ export default function AddBook() {
         category: form.category.trim() || null,
         target_date: form.target_date || null,
         cover_color: form.cover_color || null,
+        cover_url: form.cover_url || null,
         status: 'queued',
       })
       toast('Added to your deployment queue.')
@@ -82,6 +134,67 @@ export default function AddBook() {
       <p className="rs-muted-line rs-block">
         New books land in the deployment queue. Log pages later to move them to active recon.
       </p>
+
+      {isGoogleBooksConfigured && (
+        <div className="rs-block">
+          <div className="rs-field">
+            <label htmlFor="gb-search">search google books</label>
+            <div className="rs-gb-search">
+              <Icon name="search" size={16} />
+              <input
+                id="gb-search"
+                type="search"
+                placeholder="Search by title or author…"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                autoComplete="off"
+              />
+            </div>
+          </div>
+
+          {searching && (
+            <p className="rs-muted-line" style={{ marginTop: 8 }}>
+              Searching…
+            </p>
+          )}
+          {searchError && (
+            <p className="rs-form-error" style={{ marginTop: 8 }}>
+              {searchError}
+            </p>
+          )}
+
+          {results.length > 0 && (
+            <div className="rs-gb-results">
+              {results.map((r) => (
+                <button
+                  type="button"
+                  key={r.id}
+                  className="rs-gb-item"
+                  onClick={() => selectResult(r)}
+                >
+                  {r.thumbnail ? (
+                    <img className="rs-gb-thumb" src={r.thumbnail} alt="" loading="lazy" />
+                  ) : (
+                    <span className="rs-gb-thumb rs-gb-thumb--empty" />
+                  )}
+                  <span className="rs-gb-meta">
+                    <span className="rs-gb-title">{r.title}</span>
+                    <span className="rs-gb-sub">
+                      {r.author}
+                      {r.year ? ` · ${r.year}` : ''}
+                      {r.pageCount ? ` · ${r.pageCount}p` : ''}
+                    </span>
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
+
+          <p className="rs-text-faint" style={{ fontSize: 12, marginTop: 10 }}>
+            Pick a result to auto-fill the form, or enter details manually below.
+          </p>
+        </div>
+      )}
 
       <form className="rs-form" onSubmit={onSubmit}>
         <div className="rs-field">
@@ -145,8 +258,24 @@ export default function AddBook() {
           </datalist>
         </div>
 
+        {form.cover_url && (
+          <div className="rs-field">
+            <label>cover</label>
+            <div className="rs-flex rs-gap-3 rs-items-center">
+              <img
+                src={form.cover_url}
+                alt=""
+                style={{ width: 46, height: 66, objectFit: 'cover', borderRadius: 3 }}
+              />
+              <button type="button" className="rs-back" onClick={() => set('cover_url', '')}>
+                Remove cover
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="rs-field">
-          <label>cover color</label>
+          <label>cover color {form.cover_url ? '(fallback)' : ''}</label>
           <div className="rs-flex rs-gap-2 rs-items-center">
             {SWATCHES.map((s) => (
               <button

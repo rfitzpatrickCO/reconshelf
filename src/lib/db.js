@@ -59,6 +59,13 @@ export async function deleteBook(id) {
   if (error) throw error
 }
 
+// Set only the cover (no updated_at bump) — used by the "fetch missing covers"
+// backfill so it doesn't reshuffle the recently-updated ordering.
+export async function setBookCover(id, cover_url) {
+  const { error } = await supabase.from('books').update({ cover_url }).eq('id', id)
+  if (error) throw error
+}
+
 // ---- Field notes ----
 
 export async function listNotes(bookId) {

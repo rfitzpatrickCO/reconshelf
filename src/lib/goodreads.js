@@ -34,6 +34,16 @@ function toInt(value) {
   return Number.isFinite(n) && n > 0 ? n : null
 }
 
+// Goodreads wraps ISBNs like ="9781476789385" — strip everything but digits/X.
+// Prefer the 13-digit ISBN; fall back to the 10-digit one.
+function parseIsbn(row) {
+  const clean = (v) => String(v ?? '').replace(/[^0-9Xx]/g, '')
+  const isbn13 = clean(row['ISBN13'])
+  if (isbn13.length === 13) return isbn13
+  const isbn10 = clean(row['ISBN'])
+  return isbn10.length === 10 ? isbn10 : null
+}
+
 // First custom shelf (excluding the exclusive shelves) makes a reasonable category.
 function categoryFromShelves(bookshelves) {
   const tags = (bookshelves || '')
@@ -41,6 +51,17 @@ function categoryFromShelves(bookshelves) {
     .map((s) => s.trim())
     .filter((s) => s && !['read', 'currently-reading', 'to-read'].includes(s))
   return tags[0] || null
+}
+
+// Goodreads' standard export reliably includes "Date Read" (finish) but NOT a
+// start date. We still look for the common start-date column names in case the
+// export came from a tool/plugin that adds one — if absent, started_at stays null.
+function pickDate(row, names) {
+  for (const n of names) {
+    const d = parseDate(row[n])
+    if (d) return d
+  }
+  return null
 }
 
 function mapRow(row) {
@@ -51,7 +72,8 @@ function mapRow(row) {
   const status = statusFromShelf(row['Exclusive Shelf'])
   const totalPages = toInt(row['Number of Pages'])
   const myRating = toInt(row['My Rating'])
-  const finishedAt = status === 'debriefed' ? parseDate(row['Date Read']) : null
+  const startedAt = pickDate(row, ['Date Started', 'Started', 'Read Start Date'])
+  const finishedAt = pickDate(row, ['Date Read', 'Date Finished'])
 
   return {
     title,
@@ -61,8 +83,9 @@ function mapRow(row) {
     status,
     rating: status === 'debriefed' && myRating ? myRating : null,
     category: categoryFromShelves(row['Bookshelves']),
-    finished_at: finishedAt,
-    started_at: null,
+    started_at: startedAt,
+    finished_at: status === 'debriefed' ? finishedAt : null,
+    isbn: parseIsbn(row),
     cover_color: null,
   }
 }

@@ -5,6 +5,7 @@ import { progressPct, pagesLeft } from '../lib/stats'
 import { statusMeta, formatDate } from '../lib/status'
 import { useToast } from '../components/Toast'
 import ProgressBar from '../components/ProgressBar'
+import BookCover from '../components/BookCover'
 import Icon from '../components/Icon'
 
 export default function Dossier() {
@@ -86,6 +87,21 @@ export default function Dossier() {
     await reload()
   }
 
+  // Explicitly start reading — records the start date (the app's own tracking,
+  // since Goodreads exports don't include start dates).
+  async function beginRecon() {
+    const today = new Date().toISOString().slice(0, 10)
+    await updateBook(book.id, { status: 'active', started_at: book.started_at || today })
+    await reload()
+    toast('Recon underway — start date logged.')
+  }
+
+  // Editable dates (also lets you backfill start dates on imported books).
+  async function setDateField(field, value) {
+    await updateBook(book.id, { [field]: value || null })
+    await reload()
+  }
+
   async function addNote(e) {
     e.preventDefault()
     if (!noteBody.trim()) return
@@ -121,10 +137,7 @@ export default function Dossier() {
       {/* header block */}
       <div className="rs-block">
         <div className="rs-dossier-header">
-          <div
-            className={`rs-dossier-cover ${meta.cover}`}
-            style={book.cover_color ? { background: book.cover_color } : undefined}
-          />
+          <BookCover book={book} variant="dossier" />
           <div className="rs-dossier-head-info">
             <span className={`rs-badge ${meta.badge}`}>{meta.label}</span>
             <h1 className="rs-dossier-title">{book.title}</h1>
@@ -148,7 +161,7 @@ export default function Dossier() {
         </div>
       </div>
 
-      {/* meta grid */}
+      {/* meta grid — dates are editable so you can set/backfill them */}
       <div className="rs-block">
         <div className="rs-dossier-meta-grid">
           <div>
@@ -157,11 +170,25 @@ export default function Dossier() {
           </div>
           <div>
             <p className="rs-dossier-meta-label">started</p>
-            <p className="rs-dossier-meta-value">{formatDate(book.started_at)}</p>
+            <input
+              type="date"
+              className="rs-meta-date"
+              value={book.started_at || ''}
+              onChange={(e) => setDateField('started_at', e.target.value)}
+            />
           </div>
           <div>
-            <p className="rs-dossier-meta-label">target date</p>
-            <p className="rs-dossier-meta-value">{formatDate(book.target_date)}</p>
+            <p className="rs-dossier-meta-label">
+              {book.status === 'debriefed' ? 'finished' : 'target date'}
+            </p>
+            <input
+              type="date"
+              className="rs-meta-date"
+              value={(book.status === 'debriefed' ? book.finished_at : book.target_date) || ''}
+              onChange={(e) =>
+                setDateField(book.status === 'debriefed' ? 'finished_at' : 'target_date', e.target.value)
+              }
+            />
           </div>
         </div>
       </div>
@@ -221,8 +248,16 @@ export default function Dossier() {
         )}
 
         <div className="rs-btn-row" style={{ marginTop: 14 }}>
+          {book.status === 'queued' && (
+            <button className="rs-btn rs-btn-primary" onClick={beginRecon}>
+              Begin recon
+            </button>
+          )}
           {book.status !== 'debriefed' ? (
-            <button className="rs-btn rs-btn-primary" onClick={markDebriefed}>
+            <button
+              className={`rs-btn ${book.status === 'queued' ? 'rs-btn-secondary' : 'rs-btn-primary'}`}
+              onClick={markDebriefed}
+            >
               Mark debriefed
             </button>
           ) : (

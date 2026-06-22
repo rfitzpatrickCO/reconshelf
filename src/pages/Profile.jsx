@@ -6,6 +6,7 @@ import { useToast } from '../components/Toast'
 import ProgressBar from '../components/ProgressBar'
 import StatCard from '../components/StatCard'
 import GoodreadsImport from '../components/GoodreadsImport'
+import FetchMissingCovers from '../components/FetchMissingCovers'
 
 const GENRES = [
   'Military thriller', 'Espionage', 'Thriller', 'History', 'Biography',
@@ -147,6 +148,16 @@ export default function Profile() {
           the CSV here.
         </p>
         <GoodreadsImport onImported={() => load()} />
+      </div>
+
+      {/* covers */}
+      <div className="rs-block">
+        <p className="rs-section-title">Book covers</p>
+        <p className="rs-muted-line" style={{ marginBottom: 12 }}>
+          Look up cover art on Google Books for any books that don't have one yet (e.g. Goodreads
+          imports). Existing covers are left untouched.
+        </p>
+        <FetchMissingCovers onDone={() => load()} />
       </div>
 
       {/* account */}

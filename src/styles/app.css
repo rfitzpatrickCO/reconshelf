@@ -436,9 +436,120 @@ a {
   font-size: 13px;
 }
 
+/* real cover images fill the cover area; the status stripe stays as an accent */
+img.rs-book-cover,
+img.rs-dossier-cover {
+  object-fit: cover;
+  object-position: center;
+}
+
+/* ============================================================
+   Google Books search (Add to shelf)
+   ============================================================ */
+.rs-gb-search {
+  display: flex;
+  align-items: center;
+  gap: var(--rs-space-2);
+  background: var(--rs-surface);
+  border: 1px solid var(--rs-border-input);
+  border-radius: var(--rs-radius-md);
+  padding: 0 12px;
+}
+
+.rs-gb-search:focus-within {
+  border-color: var(--rs-brass);
+  box-shadow: var(--rs-focus-ring);
+}
+
+.rs-gb-search .rs-icon {
+  color: var(--rs-text-faint);
+  flex-shrink: 0;
+}
+
+.rs-gb-search input {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  flex: 1;
+}
+
+.rs-gb-results {
+  margin-top: var(--rs-space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--rs-space-2);
+}
+
+.rs-gb-item {
+  display: flex;
+  gap: var(--rs-space-3);
+  align-items: center;
+  text-align: left;
+  padding: var(--rs-space-2) var(--rs-space-3);
+  background: var(--rs-surface);
+  border: 1px solid var(--rs-border);
+  border-radius: var(--rs-radius-md);
+  cursor: pointer;
+  font-family: var(--rs-font-sans);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.rs-gb-item:hover {
+  background: var(--rs-surface-raised);
+  border-color: var(--rs-border-input);
+}
+
+.rs-gb-thumb {
+  width: 36px;
+  height: 52px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: 3px;
+  background: var(--rs-border-input);
+}
+
+.rs-gb-thumb--empty {
+  display: block;
+}
+
+.rs-gb-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.rs-gb-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--rs-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rs-gb-sub {
+  font-size: 12px;
+  color: var(--rs-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* ============================================================
    Dossier extras
    ============================================================ */
+/* editable date in the dossier meta grid */
+.rs-meta-date {
+  width: 100%;
+  min-width: 0;
+  height: 34px;
+  font-size: 13px;
+  padding: 6px 8px;
+}
+
 .rs-dossier-head-info {
   flex: 1;
   min-width: 0;

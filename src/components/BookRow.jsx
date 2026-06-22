@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import ProgressBar from './ProgressBar'
+import BookCover from './BookCover'
 import { progressPct } from '../lib/stats'
 import { statusMeta } from '../lib/status'
 
@@ -21,10 +22,7 @@ export default function BookRow({ book }) {
         }
       }}
     >
-      <div
-        className={`rs-book-cover ${meta.cover}`}
-        style={book.cover_color ? { background: book.cover_color } : undefined}
-      />
+      <BookCover book={book} />
       <div className="rs-book-info">
         <p className="rs-book-title">{book.title}</p>
         <p className="rs-book-author">{book.author}</p>

@@ -16,6 +16,8 @@ create table if not exists public.books (
   title         text not null,
   author        text not null,
   cover_color   text,
+  cover_url     text,
+  isbn          text,
   status        text not null default 'queued'
                   check (status in ('queued', 'active', 'debriefed', 'stalled')),
   total_pages   integer,
