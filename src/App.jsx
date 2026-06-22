@@ -5,6 +5,7 @@ import { ToastProvider } from './components/Toast'
 import { getSettings } from './lib/db'
 import Login from './auth/Login'
 import Onboarding from './onboarding/Onboarding'
+import LoadingScreen from './components/LoadingScreen'
 import Layout from './components/Layout'
 import Shelf from './pages/Shelf'
 import Dossier from './pages/Dossier'
@@ -53,7 +54,7 @@ function AuthedApp() {
   }, [])
 
   if (error) return <div className="rs-spinner-wrap">Could not load your profile: {error}</div>
-  if (profile === undefined) return <div className="rs-spinner-wrap">Reporting in…</div>
+  if (profile === undefined) return <LoadingScreen />
 
   if (!profile || !profile.onboarded) {
     return <Onboarding onComplete={load} />
@@ -64,7 +65,7 @@ function AuthedApp() {
 function Gate() {
   const { session, loading, configured } = useAuth()
 
-  if (loading) return <div className="rs-spinner-wrap">Securing the channel…</div>
+  if (loading) return <LoadingScreen />
   if (!configured || !session) return <Login />
 
   return <AuthedApp />

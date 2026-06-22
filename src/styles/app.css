@@ -55,6 +55,14 @@ a {
   letter-spacing: 1px;
 }
 
+/* The design system's progress-fill color variants only set background, not
+   height — so on their own the fill has 0 height and is invisible. Restore it. */
+.rs-progress-fill--forest,
+.rs-progress-fill--rust,
+.rs-progress-fill--steel {
+  height: 100%;
+}
+
 /* ---- sidebar (desktop nav) ---- */
 .rs-sidebar {
   width: var(--rs-sidebar-w);
@@ -428,6 +436,10 @@ a {
   width: 100%;
 }
 
+.rs-field {
+  min-width: 0; /* allow inputs (esp. iOS date pickers) to shrink in flex/grid */
+}
+
 .rs-field-row {
   display: flex;
   gap: var(--rs-space-3);
@@ -435,6 +447,13 @@ a {
 
 .rs-field-row .rs-field {
   flex: 1;
+  min-width: 0;
+}
+
+/* dossier meta grid: wrap instead of cramming date inputs across 3 columns
+   (iOS date controls are wide). Falls to 2 then 1 column as space tightens. */
+.rs-dossier-meta-grid {
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
 }
 
 .rs-form-error {
@@ -807,6 +826,80 @@ img.rs-dossier-cover {
   font-size: 14px;
 }
 
+/* ---- loading screen (app launch + logging) ---- */
+.rs-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--rs-space-5);
+  padding: var(--rs-space-6);
+  text-align: center;
+  background:
+    radial-gradient(900px 500px at 50% 38%, rgba(201, 164, 92, 0.07), transparent 60%),
+    var(--rs-bg);
+}
+
+.rs-loading .rs-logo {
+  opacity: 0.95;
+  animation: rs-loading-pulse 1.8s ease-in-out infinite;
+}
+
+.rs-loading-quote {
+  font-family: var(--rs-font-serif);
+  font-style: italic;
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--rs-text-secondary);
+  max-width: 22ch;
+  margin: 0;
+}
+
+.rs-loading-bar {
+  width: 140px;
+  height: 3px;
+  background: var(--rs-border-strong);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.rs-loading-bar span {
+  display: block;
+  width: 40%;
+  height: 100%;
+  background: var(--rs-brass);
+  border-radius: 2px;
+  animation: rs-loading-sweep 1.15s ease-in-out infinite;
+}
+
+@keyframes rs-loading-sweep {
+  0% {
+    transform: translateX(-110%);
+  }
+  100% {
+    transform: translateX(360%);
+  }
+}
+
+@keyframes rs-loading-pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rs-loading .rs-logo,
+  .rs-loading-bar span {
+    animation: none;
+  }
+}
+
 /* ============================================================
    Responsive — collapse to phone shell on small screens
    ============================================================ */
@@ -836,5 +929,12 @@ img.rs-dossier-cover {
 @media (min-width: 1100px) {
   .rs-content {
     padding-top: var(--rs-space-6);
+  }
+}
+
+/* phones: stack paired fields so wide iOS date inputs get full width */
+@media (max-width: 480px) {
+  .rs-field-row {
+    flex-direction: column;
   }
 }

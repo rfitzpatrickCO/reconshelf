@@ -6,6 +6,7 @@ import { statusMeta, formatDate } from '../lib/status'
 import { useToast } from '../components/Toast'
 import ProgressBar from '../components/ProgressBar'
 import BookCover from '../components/BookCover'
+import LoadingScreen from '../components/LoadingScreen'
 import Icon from '../components/Icon'
 
 export default function Dossier() {
@@ -20,6 +21,7 @@ export default function Dossier() {
   const [pagesInput, setPagesInput] = useState('')
   const [noteBody, setNoteBody] = useState('')
   const [notePage, setNotePage] = useState('')
+  const [logging, setLogging] = useState(false)
 
   async function reload() {
     const [b, n] = await Promise.all([getBook(id), listNotes(id)])
@@ -43,13 +45,20 @@ export default function Dossier() {
     e.preventDefault()
     const n = parseInt(pagesInput, 10)
     if (!Number.isFinite(n) || n === 0) return
+    setLogging(true)
+    const started = Date.now()
     try {
       await logPages(book, n)
-      setPagesInput('')
       await reload()
+      setPagesInput('')
       toast(`Logged ${n > 0 ? n : 0} page${Math.abs(n) === 1 ? '' : 's'}.`)
     } catch (err) {
       toast(err.message)
+    } finally {
+      // hold the quote on screen briefly so it reads as a beat, not a flash
+      const elapsed = Date.now() - started
+      if (elapsed < 1000) await new Promise((r) => setTimeout(r, 1000 - elapsed))
+      setLogging(false)
     }
   }
 
@@ -128,6 +137,7 @@ export default function Dossier() {
 
   return (
     <>
+      {logging && <LoadingScreen />}
       <div className="rs-page-head">
         <button className="rs-back" onClick={() => navigate(-1)}>
           <Icon name="back" size={16} /> Dossier
