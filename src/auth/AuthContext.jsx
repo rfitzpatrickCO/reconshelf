@@ -34,6 +34,13 @@ export function AuthProvider({ children }) {
     if (error) throw error
   }
 
+  async function verifyCode(email, token) {
+    // Completes sign-in from the 6-digit code in the email — stays inside the
+    // PWA, so it works on iOS where clicking the link opens Safari instead.
+    const { error } = await supabase.auth.verifyOtp({ email, token, type: 'email' })
+    if (error) throw error
+  }
+
   async function signOut() {
     await supabase.auth.signOut()
   }
@@ -44,6 +51,7 @@ export function AuthProvider({ children }) {
     loading,
     configured: isSupabaseConfigured,
     signInWithEmail,
+    verifyCode,
     signOut,
   }
 

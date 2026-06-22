@@ -1,0 +1,94 @@
+<!--
+  Recon Shelf — Magic Link / one-time-code email template.
+  Paste this into Supabase: Authentication -> Email Templates -> "Magic Link".
+  Email HTML rules: table-based layout, inline styles, no external CSS/JS.
+  Supabase variables used: {{ .Token }} (6-digit code) and {{ .ConfirmationURL }} (desktop link).
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+       style="background-color:#1c1b18;margin:0;padding:32px 12px;">
+  <tr>
+    <td align="center">
+      <table role="presentation" width="460" cellpadding="0" cellspacing="0" border="0"
+             style="width:460px;max-width:460px;background-color:#23221a;border:1px solid #33312a;border-radius:12px;">
+        <!-- brand -->
+        <tr>
+          <td style="padding:28px 32px 0 32px;" align="center">
+            <img src="https://www.reconshelf.com/icon-192.png" width="46" height="46" alt=""
+                 style="display:block;border-radius:10px;border:1px solid #33312a;" />
+            <div style="font-family:Arial,Helvetica,sans-serif;font-size:17px;font-weight:500;letter-spacing:0.5px;color:#e8e3d6;padding-top:12px;">
+              recon shelf
+            </div>
+          </td>
+        </tr>
+
+        <!-- heading -->
+        <tr>
+          <td style="padding:24px 32px 0 32px;" align="center">
+            <div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#7d7a6c;">
+              Secure sign-in
+            </div>
+            <div style="font-family:Arial,Helvetica,sans-serif;font-size:26px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#e8e3d6;padding-top:8px;">
+              Report for duty
+            </div>
+            <div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.6;color:#9a9788;padding-top:12px;">
+              Enter this one-time code in the app to access your shelf. It expires in 1 hour.
+            </div>
+          </td>
+        </tr>
+
+        <!-- code -->
+        <tr>
+          <td style="padding:24px 32px 8px 32px;" align="center">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0"
+                   style="background-color:#1c1b18;border:1px solid #4a4738;border-radius:8px;">
+              <tr>
+                <td style="padding:18px 28px;font-family:'Courier New',Courier,monospace;font-size:34px;font-weight:700;letter-spacing:10px;color:#c9a45c;">
+                  {{ .Token }}
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- desktop fallback link -->
+        <tr>
+          <td style="padding:16px 32px 4px 32px;" align="center">
+            <div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#7d7a6c;padding-bottom:12px;">
+              On a computer? You can sign in directly:
+            </div>
+            <a href="{{ .ConfirmationURL }}"
+               style="display:inline-block;background-color:#c9a45c;color:#1c1b18;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:600;text-decoration:none;padding:11px 22px;border-radius:8px;">
+              Sign in on this device
+            </a>
+          </td>
+        </tr>
+
+        <!-- divider -->
+        <tr>
+          <td style="padding:24px 32px 0 32px;">
+            <div style="border-top:1px solid #33312a;font-size:0;line-height:0;">&nbsp;</div>
+          </td>
+        </tr>
+
+        <!-- footer -->
+        <tr>
+          <td style="padding:16px 32px 28px 32px;" align="center">
+            <div style="font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.6;color:#7d7a6c;">
+              You're receiving this because someone requested a sign-in code for Recon Shelf.
+              If that wasn't you, you can safely ignore this email — no one can access your shelf without this code.
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <!-- outside-card wordmark -->
+      <table role="presentation" width="460" cellpadding="0" cellspacing="0" border="0" style="width:460px;max-width:460px;">
+        <tr>
+          <td align="center" style="padding:18px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:1px;color:#5c5a50;">
+            RECON SHELF · PRIVATE READING LOG
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

@@ -3,10 +3,14 @@ import { useAuth } from './AuthContext'
 import Logo from '../components/Logo'
 
 export default function Login() {
-  const { signInWithEmail, configured } = useAuth()
+  const { signInWithEmail, verifyCode, configured } = useAuth()
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState('idle') // idle | sending | sent | error
   const [error, setError] = useState('')
+
+  const [code, setCode] = useState('')
+  const [verifying, setVerifying] = useState(false)
+  const [codeError, setCodeError] = useState('')
 
   if (!configured) {
     return (
@@ -37,6 +41,21 @@ export default function Login() {
     }
   }
 
+  async function onVerify(e) {
+    e.preventDefault()
+    const token = code.trim()
+    if (token.length < 6) return
+    setVerifying(true)
+    setCodeError('')
+    try {
+      // On success, the auth listener swaps this screen for the app automatically.
+      await verifyCode(email.trim(), token)
+    } catch (err) {
+      setCodeError(err.message || 'That code did not work. Check it and try again.')
+      setVerifying(false)
+    }
+  }
+
   return (
     <div className="rs-auth">
       <div className="rs-auth-card">
@@ -46,13 +65,42 @@ export default function Login() {
         {status === 'sent' ? (
           <>
             <p className="rs-auth-sub rs-auth-success">
-              Orders sent. Check <strong>{email}</strong> for a sign-in link and tap it to enter
-              your shelf.
+              Orders sent to <strong>{email}</strong>. Enter the 6-digit code from the email below.
+            </p>
+
+            <form className="rs-auth-form" onSubmit={onVerify}>
+              <input
+                type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                pattern="[0-9]*"
+                maxLength={6}
+                placeholder="123456"
+                value={code}
+                onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
+                style={{ letterSpacing: '0.4em', fontSize: 18 }}
+                required
+                autoFocus
+              />
+              <button type="submit" className="rs-btn rs-btn-primary" disabled={verifying}>
+                {verifying ? 'Verifying…' : 'Sign in'}
+              </button>
+            </form>
+            {codeError && <p className="rs-auth-note rs-auth-error">{codeError}</p>}
+
+            <p className="rs-auth-note">
+              On a computer you can also just tap the link in the email. On iPhone, use the code
+              above so you stay in the app.
             </p>
             <button
               type="button"
-              className="rs-btn rs-btn-secondary"
-              onClick={() => setStatus('idle')}
+              className="rs-signout"
+              style={{ marginTop: 'var(--rs-space-2)' }}
+              onClick={() => {
+                setStatus('idle')
+                setCode('')
+                setCodeError('')
+              }}
             >
               Use a different email
             </button>
@@ -60,7 +108,7 @@ export default function Login() {
         ) : (
           <>
             <p className="rs-auth-sub">
-              Enter your email and we'll send a one-time sign-in link. No password to remember.
+              Enter your email and we'll send a one-time code. No password to remember.
             </p>
             <form className="rs-auth-form" onSubmit={onSubmit}>
               <input
@@ -77,7 +125,7 @@ export default function Login() {
                 className="rs-btn rs-btn-primary"
                 disabled={status === 'sending'}
               >
-                {status === 'sending' ? 'Sending…' : 'Send sign-in link'}
+                {status === 'sending' ? 'Sending…' : 'Send sign-in code'}
               </button>
             </form>
             {status === 'error' && <p className="rs-auth-note rs-auth-error">{error}</p>}
