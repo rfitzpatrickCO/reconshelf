@@ -407,6 +407,33 @@ a {
   cursor: pointer;
 }
 
+/* iOS Safari renders <input type="date"> ~2x taller than other fields and
+   ignores `height` because of the native control. Strip the native appearance
+   on iOS only (via the -webkit-touch-callout @supports test, which matches iOS
+   WebKit) so the date field matches every other input. Desktop keeps its
+   calendar-picker button. */
+@supports (-webkit-touch-callout: none) {
+  .recon-shelf input[type='date'] {
+    -webkit-appearance: none;
+    appearance: none;
+    min-height: 0;
+    height: 36px;
+    line-height: 1.2;
+  }
+  .rs-meta-date {
+    height: 36px;
+  }
+  .recon-shelf input[type='date']::-webkit-date-and-time-value {
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    line-height: 1.2;
+  }
+  .recon-shelf input[type='date']::-webkit-datetime-edit {
+    padding: 0;
+  }
+}
+
 /* ============================================================
    Forms (Add to shelf, settings, notes)
    ============================================================ */
