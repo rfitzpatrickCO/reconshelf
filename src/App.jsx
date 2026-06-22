@@ -6,6 +6,7 @@ import { getSettings } from './lib/db'
 import Login from './auth/Login'
 import Onboarding from './onboarding/Onboarding'
 import LoadingScreen from './components/LoadingScreen'
+import UpdatePrompt from './components/UpdatePrompt'
 import Layout from './components/Layout'
 import Shelf from './pages/Shelf'
 import Dossier from './pages/Dossier'
@@ -41,16 +42,24 @@ function AuthedApp() {
   const [profile, setProfile] = useState(undefined) // undefined = loading
   const [error, setError] = useState('')
 
-  async function load() {
+  async function load(minHold = false) {
+    const startedAt = Date.now()
     try {
-      setProfile(await getSettings())
+      const result = await getSettings()
+      // On launch/login, hold the loading screen briefly so the quote is seen
+      // rather than flashing by (data often loads in well under a second).
+      if (minHold) {
+        const elapsed = Date.now() - startedAt
+        if (elapsed < 1300) await new Promise((r) => setTimeout(r, 1300 - elapsed))
+      }
+      setProfile(result)
     } catch (err) {
       setError(err.message)
     }
   }
 
   useEffect(() => {
-    load()
+    load(true)
   }, [])
 
   if (error) return <div className="rs-spinner-wrap">Could not load your profile: {error}</div>
@@ -76,6 +85,7 @@ export default function App() {
     <BrowserRouter basename={import.meta.env.BASE_URL}>
       <AuthProvider>
         <Gate />
+        <UpdatePrompt />
       </AuthProvider>
     </BrowserRouter>
   )

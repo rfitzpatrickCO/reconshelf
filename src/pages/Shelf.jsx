@@ -27,7 +27,7 @@ export default function Shelf() {
   return (
     <>
       <div className="rs-page-head">
-        <h1 className="rs-page-title">The shelf</h1>
+        <h1 className="rs-page-title">The reading list</h1>
       </div>
 
       {/* stat row */}

@@ -816,6 +816,74 @@ img.rs-dossier-cover {
   color: var(--rs-text-muted);
 }
 
+/* ---- PWA update banner ---- */
+.rs-update {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(20px + env(safe-area-inset-bottom));
+  z-index: 200;
+  width: calc(100% - 32px);
+  max-width: 440px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--rs-space-4);
+  background: var(--rs-surface-raised);
+  border: 1px solid var(--rs-brass);
+  border-radius: var(--rs-radius-lg);
+  padding: var(--rs-space-3) var(--rs-space-4);
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.5);
+}
+
+.rs-update-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.rs-update-text strong {
+  font-size: 14px;
+  color: var(--rs-text-primary);
+}
+
+.rs-update-text span {
+  font-size: 12px;
+  color: var(--rs-text-muted);
+}
+
+.rs-update-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--rs-space-2);
+  flex-shrink: 0;
+}
+
+.rs-update .rs-btn {
+  padding: 8px 16px;
+}
+
+.rs-update-later {
+  background: none;
+  border: none;
+  color: var(--rs-text-faint);
+  font-size: 12px;
+  cursor: pointer;
+  font-family: var(--rs-font-sans);
+}
+
+.rs-update-later:hover {
+  color: var(--rs-text-secondary);
+}
+
+/* sit above the mobile tab bar */
+@media (max-width: 760px) {
+  .rs-update {
+    bottom: calc(var(--rs-tabbar-h) + 16px + env(safe-area-inset-bottom));
+  }
+}
+
 .rs-spinner-wrap {
   min-height: 100vh;
   min-height: 100dvh;

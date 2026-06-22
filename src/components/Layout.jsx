@@ -4,15 +4,15 @@ import Icon from './Icon'
 import { useAuth } from '../auth/AuthContext'
 
 const NAV = [
-  { to: '/', label: 'The shelf', icon: 'shelf', end: true },
-  { to: '/shelf/all', label: 'Full library', icon: 'library', end: false },
+  { to: '/', label: 'The reading list', icon: 'shelf', end: true },
+  { to: '/shelf/all', label: 'Library', icon: 'library', end: false },
   { to: `/recap/${new Date().getFullYear()}`, label: 'After-action', icon: 'recap', end: false },
   { to: '/commendations', label: 'Commendations', icon: 'star', end: false },
   { to: '/profile', label: 'Profile', icon: 'user', end: false },
 ]
 
 const TABS = [
-  { to: '/', label: 'Shelf', icon: 'shelf', end: true },
+  { to: '/', label: 'Reading', icon: 'shelf', end: true },
   { to: '/shelf/all', label: 'Library', icon: 'library', end: false },
   { to: '/book/new', label: 'Add', icon: 'plus', end: false },
   { to: '/profile', label: 'Profile', icon: 'user', end: false },

@@ -48,7 +48,7 @@ export default function FullShelf() {
   return (
     <>
       <div className="rs-page-head">
-        <h1 className="rs-page-title">Full library</h1>
+        <h1 className="rs-page-title">Library</h1>
         <select
           className="rs-select-inline"
           value={sort}
