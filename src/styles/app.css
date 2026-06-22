@@ -49,6 +49,12 @@ a {
   min-height: 100dvh;
 }
 
+/* app name wordmark — uppercase across the app */
+.rs-logo-text {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
 /* ---- sidebar (desktop nav) ---- */
 .rs-sidebar {
   width: var(--rs-sidebar-w);
