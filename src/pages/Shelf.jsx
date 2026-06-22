@@ -68,7 +68,7 @@ export default function Shelf() {
         <button className="rs-btn rs-btn-primary" onClick={() => navigate('/book/new')}>
           Add to shelf
         </button>
-        <button className="rs-btn rs-btn-secondary" onClick={() => navigate('/settings')}>
+        <button className="rs-btn rs-btn-secondary" onClick={() => navigate('/profile')}>
           Set goal
         </button>
       </div>

@@ -7,14 +7,14 @@ const NAV = [
   { to: '/', label: 'The shelf', icon: 'shelf', end: true },
   { to: '/shelf/all', label: 'Full library', icon: 'library', end: false },
   { to: `/recap/${new Date().getFullYear()}`, label: 'After-action', icon: 'recap', end: false },
-  { to: '/settings', label: 'Mission parameters', icon: 'settings', end: false },
+  { to: '/profile', label: 'Profile', icon: 'user', end: false },
 ]
 
 const TABS = [
   { to: '/', label: 'Shelf', icon: 'shelf', end: true },
   { to: '/shelf/all', label: 'Library', icon: 'library', end: false },
   { to: '/book/new', label: 'Add', icon: 'plus', end: false },
-  { to: '/settings', label: 'Settings', icon: 'settings', end: false },
+  { to: '/profile', label: 'Profile', icon: 'user', end: false },
 ]
 
 function initials(email) {
@@ -80,10 +80,10 @@ export default function Layout() {
             </button>
             <button
               className="rs-back"
-              onClick={() => navigate('/settings')}
-              aria-label="Settings"
+              onClick={() => navigate('/profile')}
+              aria-label="Profile"
             >
-              <Icon name="settings" size={20} />
+              <Icon name="user" size={20} />
             </button>
           </div>
         </header>

@@ -32,6 +32,12 @@ const PATHS = {
   ),
   star: <path d="M12 2l3 6.5 7 .9-5 4.8 1.3 7-6.3-3.4-6.3 3.4 1.3-7-5-4.8 7-.9z" />,
   trash: <path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" />,
+  user: (
+    <>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" />
+    </>
+  ),
 }
 
 export default function Icon({ name, size = 18, fill = 'none', className = '' }) {

@@ -1,21 +1,19 @@
+import { useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './auth/AuthContext'
 import { ToastProvider } from './components/Toast'
+import { getSettings } from './lib/db'
 import Login from './auth/Login'
+import Onboarding from './onboarding/Onboarding'
 import Layout from './components/Layout'
 import Shelf from './pages/Shelf'
 import Dossier from './pages/Dossier'
 import AddBook from './pages/AddBook'
 import FullShelf from './pages/FullShelf'
 import Recap from './pages/Recap'
-import Settings from './pages/Settings'
+import Profile from './pages/Profile'
 
-function Gate() {
-  const { session, loading, configured } = useAuth()
-
-  if (loading) return <div className="rs-spinner-wrap">Securing the channel…</div>
-  if (!configured || !session) return <Login />
-
+function AppRoutes() {
   return (
     <ToastProvider>
       <Routes>
@@ -25,12 +23,49 @@ function Gate() {
           <Route path="book/new" element={<AddBook />} />
           <Route path="book/:id" element={<Dossier />} />
           <Route path="recap/:year" element={<Recap />} />
-          <Route path="settings" element={<Settings />} />
+          <Route path="profile" element={<Profile />} />
+          {/* keep the old /settings path working */}
+          <Route path="settings" element={<Navigate to="/profile" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
     </ToastProvider>
   )
+}
+
+// Once authenticated, decide between onboarding and the app based on the profile.
+function AuthedApp() {
+  const [profile, setProfile] = useState(undefined) // undefined = loading
+  const [error, setError] = useState('')
+
+  async function load() {
+    try {
+      setProfile(await getSettings())
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  useEffect(() => {
+    load()
+  }, [])
+
+  if (error) return <div className="rs-spinner-wrap">Could not load your profile: {error}</div>
+  if (profile === undefined) return <div className="rs-spinner-wrap">Reporting in…</div>
+
+  if (!profile || !profile.onboarded) {
+    return <Onboarding onComplete={load} />
+  }
+  return <AppRoutes />
+}
+
+function Gate() {
+  const { session, loading, configured } = useAuth()
+
+  if (loading) return <div className="rs-spinner-wrap">Securing the channel…</div>
+  if (!configured || !session) return <Login />
+
+  return <AuthedApp />
 }
 
 export default function App() {

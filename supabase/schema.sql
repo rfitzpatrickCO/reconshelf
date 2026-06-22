@@ -55,11 +55,14 @@ create table if not exists public.reading_sessions (
 
 create index if not exists reading_sessions_user_idx on public.reading_sessions (user_id, logged_at);
 
--- ---- settings (one row per user; mission parameters) ----
+-- ---- settings / profile (one row per user; mission parameters + identity) ----
 create table if not exists public.settings (
-  user_id       uuid primary key references auth.users (id) on delete cascade default auth.uid(),
-  yearly_goal   integer,
-  updated_at    timestamptz not null default now()
+  user_id        uuid primary key references auth.users (id) on delete cascade default auth.uid(),
+  yearly_goal    integer,
+  display_name   text,
+  favorite_genre text,
+  onboarded      boolean not null default false,
+  updated_at     timestamptz not null default now()
 );
 
 -- ============================================================

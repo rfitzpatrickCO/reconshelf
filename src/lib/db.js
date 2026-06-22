@@ -30,6 +30,19 @@ export async function createBook(fields) {
   return data
 }
 
+// Bulk insert (used by Goodreads import). Chunked so large libraries don't hit
+// request-size limits. user_id is filled by the column default (auth.uid()).
+export async function bulkCreateBooks(books) {
+  let inserted = 0
+  for (let i = 0; i < books.length; i += 200) {
+    const chunk = books.slice(i, i + 200)
+    const { error } = await supabase.from('books').insert(chunk)
+    if (error) throw error
+    inserted += chunk.length
+  }
+  return inserted
+}
+
 export async function updateBook(id, patch) {
   const { data, error } = await supabase
     .from('books')
