@@ -74,11 +74,11 @@ export default function Login() {
                 inputMode="numeric"
                 autoComplete="one-time-code"
                 pattern="[0-9]*"
-                maxLength={6}
-                placeholder="123456"
+                maxLength={8}
+                placeholder="Code from email"
                 value={code}
                 onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
-                style={{ letterSpacing: '0.4em', fontSize: 18 }}
+                style={{ letterSpacing: '0.3em', fontSize: 18, textAlign: 'center' }}
                 required
                 autoFocus
               />
