@@ -50,7 +50,7 @@ function AuthedApp() {
       // rather than flashing by (data often loads in well under a second).
       if (minHold) {
         const elapsed = Date.now() - startedAt
-        if (elapsed < 1300) await new Promise((r) => setTimeout(r, 1300 - elapsed))
+        if (elapsed < 2000) await new Promise((r) => setTimeout(r, 2000 - elapsed))
       }
       setProfile(result)
     } catch (err) {

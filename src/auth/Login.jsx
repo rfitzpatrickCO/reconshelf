@@ -2,6 +2,37 @@ import { useState } from 'react'
 import { useAuth } from './AuthContext'
 import Logo from '../components/Logo'
 
+// Map raw Supabase auth errors to calm, human messages so a rate-limit /
+// quota hit degrades gracefully instead of looking broken.
+function friendlySendError(err) {
+  const msg = (err?.message || '').toLowerCase()
+  const status = err?.status
+  if (status === 429 || msg.includes('rate limit') || msg.includes('security purposes') || msg.includes('only request')) {
+    return 'Too many sign-in requests right now. Give it a few minutes, then try again.'
+  }
+  if (msg.includes('signups not allowed') || msg.includes('not allowed for otp') || msg.includes('disabled')) {
+    return "This email isn't set up for access. Check with whoever invited you."
+  }
+  if (msg.includes('sending') || status >= 500) {
+    return "We're having trouble sending the email right now. Please try again in a few minutes."
+  }
+  if (msg.includes('valid') && msg.includes('email')) {
+    return "That doesn't look like a valid email address."
+  }
+  return 'Could not send your sign-in code. Please try again in a moment.'
+}
+
+function friendlyVerifyError(err) {
+  const msg = (err?.message || '').toLowerCase()
+  if (err?.status === 429 || msg.includes('rate limit')) {
+    return 'Too many attempts. Wait a moment, then try again.'
+  }
+  if (msg.includes('expired') || msg.includes('invalid') || msg.includes('token')) {
+    return 'That code is incorrect or expired. Double-check it, or request a new one.'
+  }
+  return 'Could not verify that code. Please try again.'
+}
+
 export default function Login() {
   const { signInWithEmail, verifyCode, configured } = useAuth()
   const [email, setEmail] = useState('')
@@ -37,7 +68,7 @@ export default function Login() {
       setStatus('sent')
     } catch (err) {
       setStatus('error')
-      setError(err.message || 'Could not send the sign-in link.')
+      setError(friendlySendError(err))
     }
   }
 
@@ -51,7 +82,7 @@ export default function Login() {
       // On success, the auth listener swaps this screen for the app automatically.
       await verifyCode(email.trim(), token)
     } catch (err) {
-      setCodeError(err.message || 'That code did not work. Check it and try again.')
+      setCodeError(friendlyVerifyError(err))
       setVerifying(false)
     }
   }

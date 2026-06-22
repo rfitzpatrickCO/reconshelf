@@ -25,11 +25,14 @@ export function AuthProvider({ children }) {
   }, [])
 
   async function signInWithEmail(email) {
-    // Magic link — Supabase emails a one-time link that redirects back here.
+    // Magic link / OTP — Supabase emails a one-time code + link.
+    // shouldCreateUser: false makes this invite-only: an email that isn't an
+    // existing account is rejected (no email sent), protecting the send quota.
+    // Invite people from the Supabase dashboard (Authentication → Users).
     const redirectTo = window.location.origin + import.meta.env.BASE_URL
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: redirectTo },
+      options: { emailRedirectTo: redirectTo, shouldCreateUser: false },
     })
     if (error) throw error
   }

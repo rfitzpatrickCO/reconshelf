@@ -483,6 +483,15 @@ a {
   grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
 }
 
+/* the two editable date fields on the dossier — kept on their own row so they
+   line up with each other (2 columns, collapsing to 1 on very narrow screens)
+   instead of staggering around the pages-left stat. */
+.rs-date-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--rs-space-3);
+}
+
 .rs-form-error {
   color: var(--rs-rust);
   font-size: 13px;

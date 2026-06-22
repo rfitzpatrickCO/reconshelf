@@ -171,29 +171,29 @@ export default function Dossier() {
         </div>
       </div>
 
-      {/* meta grid — dates are editable so you can set/backfill them */}
+      {/* meta — pages left, then aligned editable dates */}
       <div className="rs-block">
-        <div className="rs-dossier-meta-grid">
-          <div>
-            <p className="rs-dossier-meta-label">pages left</p>
-            <p className="rs-dossier-meta-value">{left ?? '—'}</p>
-          </div>
-          <div>
-            <p className="rs-dossier-meta-label">started</p>
+        <div style={{ marginBottom: 'var(--rs-space-4)' }}>
+          <p className="rs-dossier-meta-label">pages left</p>
+          <p className="rs-dossier-meta-value">{left ?? '—'}</p>
+        </div>
+        <div className="rs-date-row">
+          <div className="rs-field">
+            <label htmlFor="d-started">started</label>
             <input
+              id="d-started"
               type="date"
-              className="rs-meta-date"
               value={book.started_at || ''}
               onChange={(e) => setDateField('started_at', e.target.value)}
             />
           </div>
-          <div>
-            <p className="rs-dossier-meta-label">
+          <div className="rs-field">
+            <label htmlFor="d-target">
               {book.status === 'debriefed' ? 'finished' : 'target date'}
-            </p>
+            </label>
             <input
+              id="d-target"
               type="date"
-              className="rs-meta-date"
               value={(book.status === 'debriefed' ? book.finished_at : book.target_date) || ''}
               onChange={(e) =>
                 setDateField(book.status === 'debriefed' ? 'finished_at' : 'target_date', e.target.value)
