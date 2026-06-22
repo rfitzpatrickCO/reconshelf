@@ -33,6 +33,31 @@ export function longestOpTempo(sessions) {
   return longest
 }
 
+/* Current "op tempo": consecutive days with activity ending today (or yesterday,
+   so a streak isn't broken until you miss a full day). */
+export function currentOpTempo(sessions) {
+  if (!sessions?.length) return 0
+  const days = new Set(sessions.map((s) => s.logged_at))
+  const iso = (d) => d.toISOString().slice(0, 10)
+  const today = new Date()
+  const yesterday = new Date(today)
+  yesterday.setDate(today.getDate() - 1)
+
+  // Streak is only "current" if there was activity today or yesterday.
+  let cursor
+  if (days.has(iso(today))) cursor = today
+  else if (days.has(iso(yesterday))) cursor = yesterday
+  else return 0
+
+  let count = 0
+  const d = new Date(cursor)
+  while (days.has(iso(d))) {
+    count += 1
+    d.setDate(d.getDate() - 1)
+  }
+  return count
+}
+
 /* Average days between started_at and finished_at across debriefed books. */
 export function avgTimeOnTarget(books) {
   const spans = books

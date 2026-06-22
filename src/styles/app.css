@@ -450,6 +450,112 @@ img.rs-dossier-cover {
 }
 
 /* ============================================================
+   Contribution graph (op tempo heatmap)
+   ============================================================ */
+.rs-cal-scroll {
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.rs-cal {
+  display: inline-block;
+}
+
+.rs-cal-months {
+  display: grid;
+  grid-template-columns: repeat(53, 15px);
+  height: 14px;
+  margin-bottom: 4px;
+}
+
+.rs-cal-month {
+  font-size: 10px;
+  color: var(--rs-text-faint);
+  white-space: nowrap;
+}
+
+.rs-cal-grid {
+  display: flex;
+  gap: 3px;
+}
+
+.rs-cal-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.rs-cal-cell {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.rs-cal-legend {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 8px;
+  font-size: 10px;
+  color: var(--rs-text-faint);
+}
+
+.rs-cal-legend .rs-cal-cell {
+  width: 11px;
+  height: 11px;
+}
+
+/* ============================================================
+   Challenge coins
+   ============================================================ */
+.rs-coin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: var(--rs-space-4);
+}
+
+.rs-coin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+}
+
+.rs-coin-medal {
+  width: 84px;
+  height: 84px;
+}
+
+.rs-coin--locked .rs-coin-medal {
+  opacity: 0.85;
+}
+
+.rs-coin-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--rs-text-secondary);
+  line-height: 1.2;
+}
+
+.rs-coin--locked .rs-coin-name {
+  color: var(--rs-text-faint);
+  font-weight: 500;
+}
+
+.rs-coin-meta {
+  font-size: 10px;
+  letter-spacing: 0.3px;
+  color: var(--rs-text-faint);
+}
+
+.rs-coin--earned .rs-coin-meta {
+  color: var(--rs-forest);
+}
+
+/* ============================================================
    Google Books search (Add to shelf)
    ============================================================ */
 .rs-gb-search {

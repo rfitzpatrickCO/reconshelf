@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { getSettings, upsertSettings, listBooks } from '../lib/db'
 import { debriefedInYear, pagesDownrange } from '../lib/stats'
 import { useAuth } from '../auth/AuthContext'
@@ -84,6 +85,13 @@ export default function Profile() {
           <StatCard label="pages downrange" value={pagesDownrange(debriefedAll).toLocaleString()} tone="brass" />
           <StatCard label={`debriefed in ${year}`} value={debriefedThisYear} tone="steel" />
         </div>
+        <Link
+          to="/commendations"
+          className="rs-btn rs-btn-secondary"
+          style={{ width: '100%', marginTop: 'var(--rs-space-3)' }}
+        >
+          View commendations &amp; streak
+        </Link>
       </div>
 
       {/* identity + goal */}

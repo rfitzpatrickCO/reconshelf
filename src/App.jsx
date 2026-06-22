@@ -11,6 +11,7 @@ import Dossier from './pages/Dossier'
 import AddBook from './pages/AddBook'
 import FullShelf from './pages/FullShelf'
 import Recap from './pages/Recap'
+import Commendations from './pages/Commendations'
 import Profile from './pages/Profile'
 
 function AppRoutes() {
@@ -23,6 +24,7 @@ function AppRoutes() {
           <Route path="book/new" element={<AddBook />} />
           <Route path="book/:id" element={<Dossier />} />
           <Route path="recap/:year" element={<Recap />} />
+          <Route path="commendations" element={<Commendations />} />
           <Route path="profile" element={<Profile />} />
           {/* keep the old /settings path working */}
           <Route path="settings" element={<Navigate to="/profile" replace />} />
