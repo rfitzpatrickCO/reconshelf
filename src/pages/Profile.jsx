@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getSettings, upsertSettings, listBooks } from '../lib/db'
 import { debriefedInYear, pagesDownrange } from '../lib/stats'
+import { booksToGoodreadsCsv, downloadCsv } from '../lib/exportGoodreads'
 import { useAuth } from '../auth/AuthContext'
 import { useToast } from '../components/Toast'
 import ProgressBar from '../components/ProgressBar'
 import StatCard from '../components/StatCard'
 import GoodreadsImport from '../components/GoodreadsImport'
 import FetchMissingCovers from '../components/FetchMissingCovers'
+import Icon from '../components/Icon'
 
 const GENRES = [
   'Military thriller', 'Espionage', 'Thriller', 'History', 'Biography',
@@ -56,6 +58,16 @@ export default function Profile() {
     } finally {
       setSaving(false)
     }
+  }
+
+  function exportLibrary() {
+    if (books.length === 0) {
+      toast('Nothing to export yet.')
+      return
+    }
+    const csv = booksToGoodreadsCsv(books)
+    downloadCsv(`recon-shelf-${new Date().toISOString().slice(0, 10)}.csv`, csv)
+    toast(`Exported ${books.length} book${books.length === 1 ? '' : 's'}.`)
   }
 
   if (!loaded) return <p className="rs-muted-line">Loading profile…</p>
@@ -156,6 +168,19 @@ export default function Profile() {
           the CSV here.
         </p>
         <GoodreadsImport onImported={() => load()} />
+      </div>
+
+      {/* export */}
+      <div className="rs-block">
+        <p className="rs-section-title">Export your library</p>
+        <p className="rs-muted-line" style={{ marginBottom: 12 }}>
+          Download your shelf as a CSV. It uses Goodreads' format, so you can re-import it to
+          Goodreads (My Books → Import/Export → Import) or keep it as a backup. Your data is yours.
+        </p>
+        <button className="rs-btn rs-btn-secondary" onClick={exportLibrary}>
+          <Icon name="download" size={16} />
+          Export library (CSV)
+        </button>
       </div>
 
       {/* covers */}

@@ -38,6 +38,13 @@ const PATHS = {
       <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" />
     </>
   ),
+  download: (
+    <>
+      <path d="M12 3v12" />
+      <path d="M7 11l5 5 5-5" />
+      <path d="M5 21h14" />
+    </>
+  ),
 }
 
 export default function Icon({ name, size = 18, fill = 'none', className = '' }) {
