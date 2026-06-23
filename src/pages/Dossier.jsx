@@ -18,7 +18,7 @@ export default function Dossier() {
   const [notes, setNotes] = useState([])
   const [error, setError] = useState('')
 
-  const [pagesInput, setPagesInput] = useState('')
+  const [pageInput, setPageInput] = useState('')
   const [noteBody, setNoteBody] = useState('')
   const [notePage, setNotePage] = useState('')
   const [logging, setLogging] = useState(false)
@@ -41,17 +41,26 @@ export default function Dossier() {
   const pct = progressPct(book)
   const left = pagesLeft(book)
 
-  async function handleLogPages(e) {
+  // Set the page you're currently on. We store that as current_page and log the
+  // difference as a reading session so streaks (op tempo) still work.
+  async function handleSetPage(e) {
     e.preventDefault()
-    const n = parseInt(pagesInput, 10)
-    if (!Number.isFinite(n) || n === 0) return
+    let page = parseInt(pageInput, 10)
+    if (!Number.isFinite(page)) return
+    if (page < 0) page = 0
+    if (book.total_pages && page > book.total_pages) page = book.total_pages
+    const delta = page - (book.current_page || 0)
+    if (delta === 0) {
+      setPageInput('')
+      return
+    }
     setLogging(true)
     const started = Date.now()
     try {
-      await logPages(book, n)
+      await logPages(book, delta)
       await reload()
-      setPagesInput('')
-      toast(`Logged ${n > 0 ? n : 0} page${Math.abs(n) === 1 ? '' : 's'}.`)
+      setPageInput('')
+      toast(`Now on page ${page}.`)
     } catch (err) {
       toast(err.message)
     } finally {
@@ -60,14 +69,6 @@ export default function Dossier() {
       if (elapsed < 1000) await new Promise((r) => setTimeout(r, 1000 - elapsed))
       setLogging(false)
     }
-  }
-
-  async function setCurrentPage(value) {
-    const target = parseInt(value, 10)
-    if (!Number.isFinite(target)) return
-    const delta = target - (book.current_page || 0)
-    await logPages(book, delta)
-    await reload()
   }
 
   async function markDebriefed() {
@@ -226,35 +227,26 @@ export default function Dossier() {
       <div className="rs-block">
         <p className="rs-section-title">Operations</p>
         {book.status !== 'debriefed' && (
-          <form className="rs-logpages" onSubmit={handleLogPages}>
+          <form className="rs-logpages" onSubmit={handleSetPage}>
             <div className="rs-field" style={{ flex: 1 }}>
-              <label htmlFor="logpages">log pages (+/−)</label>
+              <label htmlFor="curpage">
+                currently on page{book.total_pages ? ` (of ${book.total_pages})` : ''}
+              </label>
               <input
-                id="logpages"
+                id="curpage"
                 type="number"
                 inputMode="numeric"
-                placeholder="e.g. 25"
-                value={pagesInput}
-                onChange={(e) => setPagesInput(e.target.value)}
+                min="0"
+                max={book.total_pages || undefined}
+                placeholder={`page ${book.current_page || 0}`}
+                value={pageInput}
+                onChange={(e) => setPageInput(e.target.value)}
               />
             </div>
             <button type="submit" className="rs-btn rs-btn-primary">
-              Log pages
+              Update
             </button>
           </form>
-        )}
-
-        {book.total_pages && book.status !== 'debriefed' && (
-          <div className="rs-field" style={{ marginTop: 12 }}>
-            <label>or jump current page to</label>
-            <input
-              type="range"
-              min="0"
-              max={book.total_pages}
-              value={book.current_page || 0}
-              onChange={(e) => setCurrentPage(e.target.value)}
-            />
-          </div>
         )}
 
         <div className="rs-btn-row" style={{ marginTop: 14 }}>
