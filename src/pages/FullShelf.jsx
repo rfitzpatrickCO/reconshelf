@@ -30,10 +30,14 @@ export default function FullShelf() {
     if (filter !== 'all') list = list.filter((b) => b.status === filter)
     const q = query.trim().toLowerCase()
     if (q) {
-      list = list.filter(
-        (b) =>
-          b.title.toLowerCase().includes(q) || (b.author || '').toLowerCase().includes(q)
-      )
+      // Match every word against the combined title + author + category, so a
+      // query like "jack carr the fourth option" finds the book even though no
+      // single field contains the whole string.
+      const terms = q.split(/\s+/)
+      list = list.filter((b) => {
+        const hay = `${b.title} ${b.author || ''} ${b.category || ''}`.toLowerCase()
+        return terms.every((t) => hay.includes(t))
+      })
     }
     const sorted = [...list]
     if (sort === 'title') sorted.sort((a, b) => a.title.localeCompare(b.title))

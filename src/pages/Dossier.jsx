@@ -22,6 +22,8 @@ export default function Dossier() {
   const [noteBody, setNoteBody] = useState('')
   const [notePage, setNotePage] = useState('')
   const [logging, setLogging] = useState(false)
+  const [editing, setEditing] = useState(false)
+  const [editForm, setEditForm] = useState({ title: '', author: '', total_pages: '', category: '' })
 
   async function reload() {
     const [b, n] = await Promise.all([getBook(id), listNotes(id)])
@@ -110,6 +112,33 @@ export default function Dossier() {
   async function setDateField(field, value) {
     await updateBook(book.id, { [field]: value || null })
     await reload()
+  }
+
+  function startEdit() {
+    setEditForm({
+      title: book.title || '',
+      author: book.author || '',
+      total_pages: book.total_pages ? String(book.total_pages) : '',
+      category: book.category || '',
+    })
+    setEditing(true)
+  }
+
+  async function saveEdit(e) {
+    e.preventDefault()
+    if (!editForm.title.trim() || !editForm.author.trim()) {
+      toast('Title and author are required.')
+      return
+    }
+    await updateBook(book.id, {
+      title: editForm.title.trim(),
+      author: editForm.author.trim(),
+      total_pages: editForm.total_pages ? parseInt(editForm.total_pages, 10) : null,
+      category: editForm.category.trim() || null,
+    })
+    await reload()
+    setEditing(false)
+    toast('Details updated.')
   }
 
   async function addNote(e) {
@@ -202,6 +231,72 @@ export default function Dossier() {
             />
           </div>
         </div>
+      </div>
+
+      {/* edit details (correct edition page counts, titles, etc.) */}
+      <div className="rs-block">
+        {!editing ? (
+          <button className="rs-btn rs-btn-secondary" onClick={startEdit}>
+            <Icon name="edit" size={16} />
+            Edit details
+          </button>
+        ) : (
+          <form className="rs-form" onSubmit={saveEdit}>
+            <p className="rs-section-title">Edit details</p>
+            <div className="rs-field">
+              <label htmlFor="e-title">title</label>
+              <input
+                id="e-title"
+                type="text"
+                value={editForm.title}
+                onChange={(e) => setEditForm((f) => ({ ...f, title: e.target.value }))}
+              />
+            </div>
+            <div className="rs-field">
+              <label htmlFor="e-author">author</label>
+              <input
+                id="e-author"
+                type="text"
+                value={editForm.author}
+                onChange={(e) => setEditForm((f) => ({ ...f, author: e.target.value }))}
+              />
+            </div>
+            <div className="rs-field-row">
+              <div className="rs-field">
+                <label htmlFor="e-pages">total pages</label>
+                <input
+                  id="e-pages"
+                  type="number"
+                  inputMode="numeric"
+                  min="0"
+                  value={editForm.total_pages}
+                  onChange={(e) => setEditForm((f) => ({ ...f, total_pages: e.target.value }))}
+                />
+              </div>
+              <div className="rs-field">
+                <label htmlFor="e-category">category</label>
+                <input
+                  id="e-category"
+                  type="text"
+                  value={editForm.category}
+                  onChange={(e) => setEditForm((f) => ({ ...f, category: e.target.value }))}
+                />
+              </div>
+            </div>
+            <div className="rs-btn-row">
+              <button type="submit" className="rs-btn rs-btn-primary">
+                Save
+              </button>
+              <button
+                type="button"
+                className="rs-btn rs-btn-secondary"
+                onClick={() => setEditing(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        )}
       </div>
 
       {/* rating (when debriefed) */}
