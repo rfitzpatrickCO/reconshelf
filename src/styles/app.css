@@ -1042,3 +1042,22 @@ img.rs-dossier-cover {
     flex-direction: column;
   }
 }
+
+/* iOS Safari auto-zooms when you focus an input with font-size < 16px. Bump all
+   form controls to 16px on phone widths so focusing a field never zooms the
+   page (without disabling pinch-zoom, which would hurt accessibility). Explicit
+   type selectors are needed to out-specify the 14px input[type=...] rules. */
+@media (max-width: 760px) {
+  .recon-shelf input[type='text'],
+  .recon-shelf input[type='search'],
+  .recon-shelf input[type='email'],
+  .recon-shelf input[type='number'],
+  .recon-shelf input[type='date'],
+  .recon-shelf input[type='password'],
+  .recon-shelf input[type='tel'],
+  .recon-shelf input[type='url'],
+  .recon-shelf select,
+  .recon-shelf textarea {
+    font-size: 16px;
+  }
+}
