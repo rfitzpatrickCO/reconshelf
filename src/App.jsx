@@ -6,6 +6,7 @@ import { getSettings } from './lib/db'
 import Login from './auth/Login'
 import Onboarding from './onboarding/Onboarding'
 import LoadingScreen from './components/LoadingScreen'
+import { randomPhrase } from './lib/phrases'
 import UpdatePrompt from './components/UpdatePrompt'
 import Layout from './components/Layout'
 import Shelf from './pages/Shelf'
@@ -15,6 +16,10 @@ import FullShelf from './pages/FullShelf'
 import Recap from './pages/Recap'
 import Commendations from './pages/Commendations'
 import Profile from './pages/Profile'
+
+// One quote per page load, shared by both launch loading states (auth + profile)
+// so you never see the quote change between them. Re-picked on the next launch.
+const launchPhrase = randomPhrase()
 
 function AppRoutes() {
   return (
@@ -63,7 +68,7 @@ function AuthedApp() {
   }, [])
 
   if (error) return <div className="rs-spinner-wrap">Could not load your profile: {error}</div>
-  if (profile === undefined) return <LoadingScreen />
+  if (profile === undefined) return <LoadingScreen phrase={launchPhrase} />
 
   if (!profile || !profile.onboarded) {
     return <Onboarding onComplete={load} />
@@ -74,7 +79,7 @@ function AuthedApp() {
 function Gate() {
   const { session, loading, configured } = useAuth()
 
-  if (loading) return <LoadingScreen />
+  if (loading) return <LoadingScreen phrase={launchPhrase} />
   if (!configured || !session) return <Login />
 
   return <AuthedApp />

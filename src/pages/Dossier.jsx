@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { getBook, updateBook, deleteBook, listNotes, createNote, deleteNote, logPages } from '../lib/db'
-import { progressPct, pagesLeft } from '../lib/stats'
+import { getBook, updateBook, deleteBook, listNotes, createNote, deleteNote, logPages, listBooks } from '../lib/db'
+import { progressPct, pagesLeft, debriefedInYear } from '../lib/stats'
 import { statusMeta, formatDate } from '../lib/status'
 import { useToast } from '../components/Toast'
 import ProgressBar from '../components/ProgressBar'
 import BookCover from '../components/BookCover'
 import LoadingScreen from '../components/LoadingScreen'
+import DebriefCelebration from '../components/DebriefCelebration'
 import Icon from '../components/Icon'
 
 export default function Dossier() {
@@ -24,6 +25,7 @@ export default function Dossier() {
   const [logging, setLogging] = useState(false)
   const [editing, setEditing] = useState(false)
   const [editForm, setEditForm] = useState({ title: '', author: '', total_pages: '', category: '' })
+  const [debrief, setDebrief] = useState(null) // { count } when celebrating
 
   async function reload() {
     const [b, n] = await Promise.all([getBook(id), listNotes(id)])
@@ -79,8 +81,16 @@ export default function Dossier() {
       finished_at: new Date().toISOString().slice(0, 10),
       current_page: book.total_pages || book.current_page,
     })
+    // count this debrief among the year's finishes for the after-action card
+    let count = 1
+    try {
+      const all = await listBooks()
+      count = debriefedInYear(all, new Date().getFullYear()).length || 1
+    } catch {
+      /* fall back to 1 */
+    }
     await reload()
-    toast('Marked debriefed. Set a rating below if you like.')
+    setDebrief({ count })
   }
 
   async function setRating(rating) {
@@ -168,6 +178,14 @@ export default function Dossier() {
   return (
     <>
       {logging && <LoadingScreen />}
+      {debrief && (
+        <DebriefCelebration
+          book={book}
+          count={debrief.count}
+          onRate={setRating}
+          onClose={() => setDebrief(null)}
+        />
+      )}
       <div className="rs-page-head">
         <button className="rs-back" onClick={() => navigate(-1)}>
           <Icon name="back" size={16} /> Dossier

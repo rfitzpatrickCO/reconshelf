@@ -852,6 +852,112 @@ img.rs-dossier-cover {
   color: var(--rs-text-muted);
 }
 
+/* ---- debrief celebration ---- */
+.rs-debrief {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--rs-space-5);
+  background: rgba(12, 11, 9, 0.84);
+}
+
+.rs-debrief-card {
+  width: 100%;
+  max-width: 360px;
+  background: var(--rs-surface);
+  border: 1px solid var(--rs-border-strong);
+  border-radius: var(--rs-radius-lg);
+  padding: var(--rs-space-6);
+  text-align: center;
+  animation: rs-debrief-in 0.32s ease both;
+}
+
+.rs-debrief-stamp {
+  display: inline-block;
+  border: 2px solid var(--rs-forest);
+  color: var(--rs-forest);
+  font-family: var(--rs-font-condensed);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 6px 16px;
+  border-radius: var(--rs-radius-sm);
+  margin-bottom: var(--rs-space-5);
+  transform: rotate(-8deg);
+  animation: rs-stamp 0.5s cubic-bezier(0.2, 1.5, 0.4, 1) both;
+}
+
+.rs-debrief-card .rs-dossier-cover {
+  display: block;
+  margin: 0 auto var(--rs-space-4);
+}
+
+.rs-debrief-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--rs-text-primary);
+  margin: 0 0 2px;
+  line-height: 1.25;
+}
+
+.rs-debrief-author {
+  font-size: 13px;
+  color: var(--rs-text-muted);
+  margin: 0 0 var(--rs-space-5);
+}
+
+.rs-debrief-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--rs-space-3);
+  margin-bottom: var(--rs-space-5);
+}
+
+.rs-debrief-rate-label {
+  font-size: 11px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--rs-text-faint);
+  margin: 0 0 var(--rs-space-2);
+}
+
+@keyframes rs-stamp {
+  0% {
+    transform: scale(2.4) rotate(-20deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(0.92) rotate(-10deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(-8deg);
+    opacity: 1;
+  }
+}
+
+@keyframes rs-debrief-in {
+  from {
+    transform: scale(0.94);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rs-debrief-stamp,
+  .rs-debrief-card {
+    animation: none;
+  }
+}
+
 /* ---- PWA update banner ---- */
 .rs-update {
   position: fixed;
