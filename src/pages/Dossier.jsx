@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getBook, updateBook, deleteBook, listNotes, createNote, deleteNote, logPages, listBooks } from '../lib/db'
 import { progressPct, pagesLeft, debriefedInYear } from '../lib/stats'
+import { nextInSeries, getSeries } from '../lib/series'
 import { statusMeta, formatDate } from '../lib/status'
 import { useToast } from '../components/Toast'
 import ProgressBar from '../components/ProgressBar'
@@ -24,7 +25,15 @@ export default function Dossier() {
   const [notePage, setNotePage] = useState('')
   const [logging, setLogging] = useState(false)
   const [editing, setEditing] = useState(false)
-  const [editForm, setEditForm] = useState({ title: '', author: '', total_pages: '', category: '' })
+  const [editForm, setEditForm] = useState({
+    title: '',
+    author: '',
+    total_pages: '',
+    category: '',
+    series_name: '',
+    series_number: '',
+    series_total: '',
+  })
   const [debrief, setDebrief] = useState(null) // { count } when celebrating
 
   async function reload() {
@@ -42,6 +51,7 @@ export default function Dossier() {
   if (!book) return <p className="rs-muted-line">Pulling the dossier…</p>
 
   const meta = statusMeta(book.status)
+  const series = getSeries(book)
   const pct = progressPct(book)
   const left = pagesLeft(book)
 
@@ -81,16 +91,18 @@ export default function Dossier() {
       finished_at: new Date().toISOString().slice(0, 10),
       current_page: book.total_pages || book.current_page,
     })
-    // count this debrief among the year's finishes for the after-action card
+    // count this debrief among the year's finishes + find the next in the series
     let count = 1
+    let next = null
     try {
       const all = await listBooks()
       count = debriefedInYear(all, new Date().getFullYear()).length || 1
+      next = nextInSeries(book, all)
     } catch {
-      /* fall back to 1 */
+      /* fall back to defaults */
     }
     await reload()
-    setDebrief({ count })
+    setDebrief({ count, next })
   }
 
   async function setRating(rating) {
@@ -130,6 +142,9 @@ export default function Dossier() {
       author: book.author || '',
       total_pages: book.total_pages ? String(book.total_pages) : '',
       category: book.category || '',
+      series_name: book.series_name || '',
+      series_number: book.series_number != null ? String(book.series_number) : '',
+      series_total: book.series_total != null ? String(book.series_total) : '',
     })
     setEditing(true)
   }
@@ -145,6 +160,9 @@ export default function Dossier() {
       author: editForm.author.trim(),
       total_pages: editForm.total_pages ? parseInt(editForm.total_pages, 10) : null,
       category: editForm.category.trim() || null,
+      series_name: editForm.series_name.trim() || null,
+      series_number: editForm.series_number ? Number(editForm.series_number) : null,
+      series_total: editForm.series_total ? parseInt(editForm.series_total, 10) : null,
     })
     await reload()
     setEditing(false)
@@ -182,8 +200,13 @@ export default function Dossier() {
         <DebriefCelebration
           book={book}
           count={debrief.count}
+          next={debrief.next}
           onRate={setRating}
           onClose={() => setDebrief(null)}
+          onNext={(id) => {
+            setDebrief(null)
+            navigate(`/book/${id}`)
+          }}
         />
       )}
       <div className="rs-page-head">
@@ -200,6 +223,12 @@ export default function Dossier() {
             <span className={`rs-badge ${meta.badge}`}>{meta.label}</span>
             <h1 className="rs-dossier-title">{book.title}</h1>
             <p className="rs-dossier-author">{book.author}</p>
+            {series && (
+              <p className="rs-dossier-series">
+                {series.series} · Book {series.number}
+                {book.series_total ? ` of ${book.series_total}` : ''}
+              </p>
+            )}
             {book.total_pages ? (
               <div style={{ marginTop: 'auto', paddingTop: 8 }}>
                 <div className="rs-flex rs-justify-between" style={{ marginBottom: 6 }}>
@@ -298,6 +327,43 @@ export default function Dossier() {
                   type="text"
                   value={editForm.category}
                   onChange={(e) => setEditForm((f) => ({ ...f, category: e.target.value }))}
+                />
+              </div>
+            </div>
+            <div className="rs-field">
+              <label htmlFor="e-series">series (optional)</label>
+              <input
+                id="e-series"
+                type="text"
+                placeholder="e.g. Scot Harvath"
+                value={editForm.series_name}
+                onChange={(e) => setEditForm((f) => ({ ...f, series_name: e.target.value }))}
+              />
+            </div>
+            <div className="rs-field-row">
+              <div className="rs-field">
+                <label htmlFor="e-series-num">book # in series</label>
+                <input
+                  id="e-series-num"
+                  type="number"
+                  inputMode="decimal"
+                  step="0.5"
+                  min="0"
+                  placeholder="e.g. 16"
+                  value={editForm.series_number}
+                  onChange={(e) => setEditForm((f) => ({ ...f, series_number: e.target.value }))}
+                />
+              </div>
+              <div className="rs-field">
+                <label htmlFor="e-series-total">of how many</label>
+                <input
+                  id="e-series-total"
+                  type="number"
+                  inputMode="numeric"
+                  min="0"
+                  placeholder="e.g. 25"
+                  value={editForm.series_total}
+                  onChange={(e) => setEditForm((f) => ({ ...f, series_total: e.target.value }))}
                 />
               </div>
             </div>

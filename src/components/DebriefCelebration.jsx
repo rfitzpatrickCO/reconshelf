@@ -15,7 +15,7 @@ function daysOnTarget(book) {
   return Math.max(0, Math.round((end - start) / 86400000))
 }
 
-export default function DebriefCelebration({ book, count, onRate, onClose }) {
+export default function DebriefCelebration({ book, count, next, onRate, onClose, onNext }) {
   const [rating, setRating] = useState(book.rating || 0)
   const days = daysOnTarget(book)
 
@@ -64,9 +64,18 @@ export default function DebriefCelebration({ book, count, onRate, onClose }) {
           ))}
         </div>
 
+        {next && (
+          <button
+            className="rs-btn rs-btn-primary"
+            style={{ width: '100%', marginTop: 'var(--rs-space-5)' }}
+            onClick={() => onNext?.(next.id)}
+          >
+            Next in series: {next.title}
+          </button>
+        )}
         <button
-          className="rs-btn rs-btn-primary"
-          style={{ width: '100%', marginTop: 'var(--rs-space-5)' }}
+          className={`rs-btn ${next ? 'rs-btn-secondary' : 'rs-btn-primary'}`}
+          style={{ width: '100%', marginTop: next ? 'var(--rs-space-2)' : 'var(--rs-space-5)' }}
           onClick={onClose}
         >
           Dismissed

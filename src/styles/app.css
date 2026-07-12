@@ -739,6 +739,13 @@ img.rs-dossier-cover {
   margin: 0;
 }
 
+.rs-dossier-series {
+  font-size: 12px;
+  color: var(--rs-brass);
+  margin: 4px 0 0;
+  letter-spacing: 0.3px;
+}
+
 .rs-note-item {
   background: var(--rs-surface);
   border: 1px solid var(--rs-border);
@@ -850,6 +857,77 @@ img.rs-dossier-cover {
 .rs-muted-line {
   font-size: 13px;
   color: var(--rs-text-muted);
+}
+
+/* ---- continue-the-series suggestion ---- */
+.rs-series-suggest {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--rs-space-3);
+  background: var(--rs-surface);
+  border: 1px solid var(--rs-border);
+  border-left: 3px solid var(--rs-brass);
+  border-radius: var(--rs-radius-md);
+  padding: var(--rs-space-3) var(--rs-space-4);
+  margin-bottom: var(--rs-space-2);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.rs-series-suggest:last-child {
+  margin-bottom: 0;
+}
+
+.rs-series-suggest:hover {
+  background: var(--rs-surface-raised);
+}
+
+.rs-series-suggest-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--rs-text-primary);
+  margin: 0 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- draggable deployment queue ---- */
+.rs-queue-item {
+  display: flex;
+  align-items: stretch;
+  gap: var(--rs-space-2);
+  margin-bottom: var(--rs-space-2);
+}
+
+.rs-queue-item:last-child {
+  margin-bottom: 0;
+}
+
+.rs-queue-item .rs-book-row {
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+.rs-drag-handle {
+  flex-shrink: 0;
+  width: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--rs-surface);
+  border: 1px solid var(--rs-border);
+  border-radius: var(--rs-radius-md);
+  color: var(--rs-text-faint);
+  cursor: grab;
+  touch-action: none;
+}
+
+.rs-drag-handle:active {
+  cursor: grabbing;
+  color: var(--rs-brass);
 }
 
 /* ---- debrief celebration ---- */

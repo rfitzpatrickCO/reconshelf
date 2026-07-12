@@ -66,6 +66,14 @@ export async function setBookCover(id, cover_url) {
   if (error) throw error
 }
 
+// Persist the manual queue order. Writes queue_position = index for each id.
+// No updated_at bump so reordering doesn't disturb other orderings.
+export async function reorderQueue(orderedIds) {
+  await Promise.all(
+    orderedIds.map((id, i) => supabase.from('books').update({ queue_position: i }).eq('id', id))
+  )
+}
+
 // ---- Field notes ----
 
 export async function listNotes(bookId) {

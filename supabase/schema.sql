@@ -23,10 +23,14 @@ create table if not exists public.books (
   total_pages   integer,
   current_page  integer not null default 0,
   category      text,
+  series_name   text,
+  series_number numeric,
+  series_total  integer,
   started_at    date,
   finished_at   date,
   target_date   date,
   rating        integer check (rating between 1 and 5),
+  queue_position integer,
   created_at    timestamptz not null default now(),
   updated_at    timestamptz not null default now()
 );

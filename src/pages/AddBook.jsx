@@ -27,6 +27,9 @@ export default function AddBook() {
     target_date: '',
     cover_color: '',
     cover_url: '',
+    series_name: '',
+    series_number: '',
+    series_total: '',
   })
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
@@ -110,6 +113,9 @@ export default function AddBook() {
         target_date: form.target_date || null,
         cover_color: form.cover_color || null,
         cover_url: form.cover_url || null,
+        series_name: form.series_name.trim() || null,
+        series_number: form.series_number ? Number(form.series_number) : null,
+        series_total: form.series_total ? parseInt(form.series_total, 10) : null,
         status: 'queued',
       })
       toast('Added to your deployment queue.')
@@ -256,6 +262,44 @@ export default function AddBook() {
               <option key={c} value={c} />
             ))}
           </datalist>
+        </div>
+
+        <div className="rs-field">
+          <label htmlFor="series">series (optional)</label>
+          <input
+            id="series"
+            type="text"
+            placeholder="e.g. Scot Harvath"
+            value={form.series_name}
+            onChange={(e) => set('series_name', e.target.value)}
+          />
+        </div>
+        <div className="rs-field-row">
+          <div className="rs-field">
+            <label htmlFor="series-num">book # in series</label>
+            <input
+              id="series-num"
+              type="number"
+              inputMode="decimal"
+              step="0.5"
+              min="0"
+              placeholder="e.g. 16"
+              value={form.series_number}
+              onChange={(e) => set('series_number', e.target.value)}
+            />
+          </div>
+          <div className="rs-field">
+            <label htmlFor="series-total">of how many</label>
+            <input
+              id="series-total"
+              type="number"
+              inputMode="numeric"
+              min="0"
+              placeholder="e.g. 25"
+              value={form.series_total}
+              onChange={(e) => set('series_total', e.target.value)}
+            />
+          </div>
         </div>
 
         {form.cover_url && (
